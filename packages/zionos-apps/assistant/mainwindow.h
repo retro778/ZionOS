@@ -78,6 +78,7 @@ private:
     QString m_streamText;
     QTimer m_renderTimer;
     QString m_lastUnsentText;
+    bool m_followBottom = true;
 };
 
 } // namespace zion

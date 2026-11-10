@@ -212,6 +212,17 @@ void MainWindow::buildUi()
     m_messages->addStretch();
     m_scroll->setWidget(inner);
     cl->addWidget(m_scroll, 1);
+    // Keep the newest content visible. The layout grows after the event
+    // that added content has returned (streamed text, command cards), so
+    // follow the scroll range itself rather than scrolling once.
+    connect(m_scroll->verticalScrollBar(), &QScrollBar::rangeChanged, this, [this](int, int max) {
+        if (m_followBottom)
+            m_scroll->verticalScrollBar()->setValue(max);
+    });
+    connect(m_scroll->verticalScrollBar(), &QScrollBar::valueChanged, this, [this](int value) {
+        // The user scrolling up stops the following; returning to the end resumes it.
+        m_followBottom = value >= m_scroll->verticalScrollBar()->maximum() - 4;
+    });
 
     m_usage = new QLabel;
     m_usage->setObjectName(QStringLiteral("usageLabel"));
@@ -347,7 +358,9 @@ MessageWidget *MainWindow::addMessage(int kind, const QString &heading)
 
 void MainWindow::scrollToBottom()
 {
+    m_followBottom = true;
     QTimer::singleShot(0, this, [this] {
+        m_followBottom = true;
         m_scroll->verticalScrollBar()->setValue(m_scroll->verticalScrollBar()->maximum());
     });
 }
