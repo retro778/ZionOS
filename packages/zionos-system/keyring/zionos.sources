@@ -1,0 +1,7 @@
+# ZionOS-specific packages (zionos-*). Everything else comes from Debian.
+Types: deb
+URIs: https://freedomnet.tech/zionos
+Suites: aleph
+Components: main
+Architectures: amd64
+Signed-By: /usr/share/keyrings/zionos-archive-keyring.asc

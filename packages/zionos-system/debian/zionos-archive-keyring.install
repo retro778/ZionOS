@@ -1,0 +1,3 @@
+keyring/zionos-archive-keyring.asc usr/share/keyrings/
+keyring/zionos.sources etc/apt/sources.list.d/
+keyring/zionos.pref etc/apt/preferences.d/

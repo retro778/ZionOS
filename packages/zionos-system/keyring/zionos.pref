@@ -1,0 +1,10 @@
+Explanation: The ZionOS repository may only ever provide ZionOS's own
+Explanation: packages. Anything else it might offer is ignored, so it can
+Explanation: never replace a Debian package.
+Package: *
+Pin: release o=ZionOS
+Pin-Priority: -1
+
+Package: zionos-*
+Pin: release o=ZionOS
+Pin-Priority: 500

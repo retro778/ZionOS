@@ -37,3 +37,12 @@ Description: ZionOS branding for the Calamares installer
  Branding (name, logo, colours, slideshow) and the "Install ZionOS" launcher
  for the Calamares installer used on the ZionOS live image. The installation
  logic itself comes unmodified from calamares-settings-debian.
+
+Package: zionos-archive-keyring
+Architecture: all
+Depends: ${misc:Depends}, ca-certificates
+Description: ZionOS archive key and APT source
+ The public key that authenticates the ZionOS package repository, the APT
+ source entry that uses it (Signed-By, so the key is trusted for this
+ repository only), and an APT pin restricting that repository to zionos-*
+ packages.

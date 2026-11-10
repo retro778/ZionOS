@@ -26,7 +26,7 @@ for pkg in "$@"; do
     (cd "$B/$pkg" && dpkg-buildpackage -us -uc -b)
     rm -f "$OUT/$(sed -n 's/^Source: //p' "$B/$pkg/debian/control")"_*.buildinfo
     cp "$B"/*.deb "$B"/*.buildinfo "$B"/*.changes "$OUT/"
-    lintian --tag-display-limit 0 --allow-root --suppress-tags no-manual-page,bogus-mail-host,bogus-mail-host-in-debian-changelog "$B"/*.changes || true
+    lintian --tag-display-limit 0 --allow-root --suppress-tags no-manual-page,bogus-mail-host,bogus-mail-host-in-debian-changelog,package-installs-apt-preferences,package-installs-apt-sources "$B"/*.changes || true
     rm -rf "$B"
 done
 
