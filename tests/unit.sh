@@ -17,6 +17,22 @@ fi
 grep -c "warning:" "$B/build.log" | sed 's/^/compiler warnings: /'
 export ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
 (cd "$B" && ctest -LE live --output-on-failure --timeout 180) || exit 1
+# The Hebrew catalogue must cover every string currently in the sources.
+if [ "${ZIONOS_GUI:-ON}" = ON ]; then
+    T=$(mktemp -d)
+    cp "$SRC/translations/zionos_he.ts" "$T/zionos_he.ts"
+    (cd "$SRC" && timeout 120 /usr/lib/qt6/bin/lupdate -no-obsolete -locations none -I . \
+        core ui welcome settings assistant -ts "$T/zionos_he.ts" > "$T/lupdate.log" 2>&1) \
+        || { echo "lupdate failed or hung (see docs/KNOWN-ISSUES.md)"; cat "$T/lupdate.log"; exit 1; }
+    if grep -q 'type="unfinished"' "$T/zionos_he.ts"; then
+        echo "Hebrew catalogue is out of date; untranslated strings:"
+        grep -B1 'type="unfinished"' "$T/zionos_he.ts" | grep '<source>' | sed 's/^ */  /'
+        echo "Run: scripts/update-translations.sh"
+        exit 1
+    fi
+    echo "Hebrew catalogue: up to date"
+    rm -rf "$T"
+fi
 if [ -z "${QUICK:-}" ]; then
     echo "== cppcheck =="
     cppcheck --quiet --std=c++20 --enable=warning,performance,portability --inline-suppr \

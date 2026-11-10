@@ -47,6 +47,8 @@ private:
     };
     QWidget *buildProviderBox(ai::ChatProvider *p);
     void refreshStatus(const QString &providerId);
+    void refreshAllStatuses(qsizetype index);
+    void showStatus(const QString &providerId, const ai::CredentialStore::Result &result);
     void saveKey(const QString &providerId);
     void removeKey(const QString &providerId);
     void refreshModels(const QString &providerId);

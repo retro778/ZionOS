@@ -129,6 +129,7 @@ less
 man-db
 bash-completion
 htop
+wl-clipboard
 rsync
 unzip
 zip

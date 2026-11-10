@@ -41,6 +41,29 @@ def run(vm, rep, outdir, user="zion", live=True):
     rc, out, err = g(user_env(user) + "wpctl status | sed -n '/Sinks:/,/Sources:/p' | head -5", user=user)
     rep.check("audio: PipeWire has an output sink", "Sinks" in out and ("Audio" in out or "Speaker" in out
               or "Output" in out or "alsa" in out.lower() or "*" in out), (out + err).replace("\n", " "))
+    rc, out, err = g(user_env(user) + "f=/usr/share/sounds/freedesktop/stereo/bell.oga; "
+                     "[ -f $f ] && timeout 20 pw-play $f && echo played", user=user)
+    rep.check("audio: a sound plays through PipeWire without error", "played" in out, (out + err)[:160])
+
+    # Display: change the resolution from inside the guest and confirm that
+    # the virtual display follows (automatic host-driven resizing needs SPICE
+    # or a hypervisor agent and is not covered here).
+    from PIL import Image
+    def screen_size():
+        p = vm.screenshot(os.path.join(outdir, "_mode.png"))
+        with Image.open(p) as im:
+            return im.size
+    before = screen_size()
+    rc, out, err = g(user_env(user) + "o=$(kscreen-doctor -o | sed 's/\\x1b\\[[0-9;]*m//g' | awk '/^Output:/{print $3; exit}'); "
+                     "kscreen-doctor output.$o.mode.1920x1080@60 2>&1 | tail -1; echo $o", user=user)
+    time.sleep(6)
+    after = screen_size()
+    rep.check("display: resolution can be changed (%dx%d -> 1920x1080)" % before, after == (1920, 1080),
+              "%s %s" % (after, (out + err).replace("\n", " ")[:120]))
+    g(user_env(user) + "o=$(kscreen-doctor -o | sed 's/\\x1b\\[[0-9;]*m//g' | awk '/^Output:/{print $3; exit}'); "
+      "kscreen-doctor output.$o.mode.%dx%d@60 >/dev/null 2>&1; true" % before, user=user)
+    time.sleep(4)
+
     rc, out, _ = g("for b in dolphin konsole systemsettings plasma-discover firefox-esr libreoffice kate "
                    "kscreen-doctor nmcli flatpak gcc g++ make zionos-welcome zionos-settings zionos-assistant; "
                    "do command -v $b >/dev/null || echo MISSING:$b; done")
@@ -65,11 +88,12 @@ def run(vm, rep, outdir, user="zion", live=True):
                      "libreoffice --headless --convert-to pdf 'קובץ עברי.txt' >/dev/null 2>&1; ls", user=user,
                      timeout=240)
     rep.check("apps: LibreOffice converts a Hebrew-named document", "קובץ עברי.pdf" in out, out + err)
-    prog = ('#include <iostream>\\n#include <string>\\nint main(){std::string s=\\"ZionOS C++ שלום\\";'
-            'std::cout<<s<<std::endl;return 0;}')
-    rc, out, err = g("cd $(mktemp -d) && printf '%s\\n' > t.cpp && g++ -std=c++20 -Wall -O2 t.cpp -o t && ./t && "
-                     "printf '#include <stdio.h>\\nint main(void){puts(\"ZionOS C ok\");return 0;}\\n' > c.c && "
-                     "gcc -Wall c.c -o c && ./c" % prog, user=user, timeout=180)
+    vm.guest_write("/tmp/zion-t.cpp", '#include <iostream>\n#include <string>\n'
+                   'int main() { std::string s = "ZionOS C++ שלום"; std::cout << s << std::endl; return 0; }\n')
+    vm.guest_write("/tmp/zion-c.c", '#include <stdio.h>\nint main(void) { puts("ZionOS C ok"); return 0; }\n')
+    rc, out, err = g("chmod 644 /tmp/zion-t.cpp /tmp/zion-c.c; runuser -u %s -- sh -c 'cd $(mktemp -d) && "
+                     "g++ -std=c++20 -Wall -Wextra -O2 /tmp/zion-t.cpp -o t && ./t && "
+                     "gcc -Wall -Wextra /tmp/zion-c.c -o c && ./c'" % user, timeout=180)
     rep.check("dev: C and C++ programs compile and run", "ZionOS C++ שלום" in out and "ZionOS C ok" in out,
               (out + err)[:200])
     rc, out, _ = g("printf 'a b\\n' | awk '{print $2}'; echo x | sed s/x/y/; tar --version | head -1; "

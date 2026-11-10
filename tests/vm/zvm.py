@@ -35,6 +35,12 @@ class _JsonSock:
                 time.sleep(0.2)
         self.buf = b""
 
+    def close(self):
+        try:
+            self.s.close()
+        except OSError:
+            pass
+
     def send(self, obj):
         self.s.sendall(json.dumps(obj).encode() + b"\n")
 
@@ -240,10 +246,16 @@ class VM:
     # ---- guest agent -----------------------------------------------------
     def wait_agent(self, timeout=300):
         """Wait until the guest agent inside the VM answers."""
+        # QEMU serves one client at a time on the agent socket: drop any
+        # previous connection (e.g. from before a guest reboot) first.
+        if self.qga is not None:
+            self.qga.close()
+            self.qga = None
         deadline = time.time() + timeout
         while time.time() < deadline:
             if not self.alive():
                 raise VMError("qemu exited while waiting for guest agent")
+            q = None
             try:
                 q = _JsonSock(self.qga_path, timeout=5)
                 token = int(time.time() * 1000) % 1000000
@@ -254,6 +266,8 @@ class VM:
                         self.qga = q
                         return True
             except (OSError, VMError, ValueError):
+                if q is not None:
+                    q.close()
                 time.sleep(3)
         raise VMError("guest agent did not respond within %ss" % timeout)
 

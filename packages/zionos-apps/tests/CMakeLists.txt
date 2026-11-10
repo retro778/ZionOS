@@ -17,6 +17,7 @@ endfunction()
 zion_test(tst_sse)
 zion_test(tst_core)
 zion_test(tst_providers mockserver.h)
+zion_test(tst_chat mockserver.h)
 zion_test(tst_i18n)
 add_dependencies(tst_i18n zionos-apps_lrelease)
 

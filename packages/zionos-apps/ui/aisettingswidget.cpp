@@ -126,8 +126,51 @@ AiSettingsWidget::AiSettingsWidget(CredentialStore *store, QList<ChatProvider *>
     outer->addStretch();
 
     connect(m_store, &CredentialStore::changed, this, &AiSettingsWidget::refreshStatus);
-    for (ChatProvider *p : m_providers)
-        refreshStatus(p->id());
+    refreshAllStatuses(0);
+}
+
+void AiSettingsWidget::refreshAllStatuses(qsizetype index)
+{
+    // One keyring request at a time: if the keyring has to ask the user
+    // something (unlock, first-use wizard) it asks once, not once per provider.
+    if (index >= m_providers.size())
+        return;
+    const QString id = m_providers.at(index)->id();
+    QPointer<AiSettingsWidget> self(this);
+    m_store->read(id, [self, index, id](const CredentialStore::Result &r, const QString &) {
+        if (!self)
+            return;
+        if (r.unavailable) {
+            for (qsizetype i = index; i < self->m_providers.size(); ++i)
+                self->showStatus(self->m_providers.at(i)->id(), r);
+            return;
+        }
+        self->showStatus(id, r);
+        self->refreshAllStatuses(index + 1);
+    });
+}
+
+void AiSettingsWidget::showStatus(const QString &providerId, const CredentialStore::Result &r)
+{
+    if (!m_ui.contains(providerId))
+        return;
+    QLabel *status = m_ui[providerId].status;
+    status->setToolTip(QString());
+    if (m_store->sessionLocation(providerId) == KeyLocation::Session) {
+        status->setText(tr("Held for this session only (not saved)."));
+        status->setToolTip(tr("A key is held in memory for this session only. It will be forgotten when the assistant closes."));
+        m_ui[providerId].remove->setEnabled(true);
+        return;
+    }
+    if (r.ok) {
+        status->setText(tr("A key is saved in the system keyring (encrypted)."));
+    } else if (r.unavailable) {
+        status->setText(tr("The system keyring is not available or is locked."));
+        status->setToolTip(r.error);
+    } else {
+        status->setText(tr("No key saved."));
+    }
+    m_ui[providerId].remove->setEnabled(r.ok);
 }
 
 QWidget *AiSettingsWidget::buildProviderBox(ChatProvider *p)
@@ -139,7 +182,6 @@ QWidget *AiSettingsWidget::buildProviderBox(ChatProvider *p)
 
     ui.status = new QLabel;
     ui.status->setObjectName(p->id() + QStringLiteral("Status"));
-    ui.status->setWordWrap(true);
     lay->addRow(tr("API key:"), ui.status);
 
     auto *row = new QHBoxLayout;
@@ -216,27 +258,15 @@ void AiSettingsWidget::refreshStatus(const QString &providerId)
 {
     if (!m_ui.contains(providerId))
         return;
-    QLabel *status = m_ui[providerId].status;
-    QPushButton *remove = m_ui[providerId].remove;
     if (m_store->sessionLocation(providerId) == KeyLocation::Session) {
-        status->setText(tr("A key is held in memory for this session only. It will be forgotten when the assistant closes."));
-        remove->setEnabled(true);
+        showStatus(providerId, {});
         return;
     }
-    status->setText(tr("Checking the keyring…"));
-    m_store->read(providerId, [status = QPointer<QLabel>(status), remove = QPointer<QPushButton>(remove)](
-                                  const CredentialStore::Result &r, const QString &) {
-        if (!status)
-            return;
-        if (r.ok) {
-            status->setText(AiSettingsWidget::tr("A key is saved in the system keyring (encrypted)."));
-        } else if (r.unavailable) {
-            status->setText(AiSettingsWidget::tr("The system keyring is not available or is locked: %1").arg(r.error));
-        } else {
-            status->setText(AiSettingsWidget::tr("No key saved."));
-        }
-        if (remove)
-            remove->setEnabled(r.ok);
+    m_ui[providerId].status->setText(tr("Checking the keyring…"));
+    QPointer<AiSettingsWidget> self(this);
+    m_store->read(providerId, [self, providerId](const CredentialStore::Result &r, const QString &) {
+        if (self)
+            self->showStatus(providerId, r);
     });
 }
 
@@ -264,8 +294,10 @@ void AiSettingsWidget::saveKey(const QString &providerId)
             info += QStringLiteral("\n\n") + r.error;
         box.setInformativeText(info);
         QPushButton *session = nullptr;
-        if (m_allowSession)
+        if (m_allowSession) {
             session = box.addButton(tr("Use for this session only"), QMessageBox::AcceptRole);
+            box.setDefaultButton(session);
+        }
         QPushButton *wallet = programAvailable(QStringLiteral("kwalletmanager5"))
                                   ? box.addButton(tr("Open Wallet Manager"), QMessageBox::ActionRole) : nullptr;
         box.addButton(QMessageBox::Cancel);

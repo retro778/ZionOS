@@ -29,6 +29,7 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QShortcut>
 #include <QSplitter>
 #include <QToolBar>
 #include <QVBoxLayout>
@@ -98,6 +99,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     rebuildConversation();
     refreshHistoryList();
+    m_input->setFocus();
 }
 
 void MainWindow::buildUi()
@@ -133,6 +135,13 @@ void MainWindow::buildUi()
     settings->setObjectName(QStringLiteral("openSettings"));
     connect(settings, &QPushButton::clicked, this, &MainWindow::openSettings);
     bar->addWidget(settings);
+    // Keyboard access: Ctrl+, settings; Ctrl+N new chat; Escape stops a reply.
+    auto *prefs = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_Comma), this);
+    connect(prefs, &QShortcut::activated, this, &MainWindow::openSettings);
+    auto *fresh = new QShortcut(QKeySequence::New, this);
+    connect(fresh, &QShortcut::activated, this, [this] { m_chat->newConversation(); });
+    auto *esc = new QShortcut(QKeySequence(Qt::Key_Escape), this);
+    connect(esc, &QShortcut::activated, m_chat, &ChatController::stop);
 
     connect(m_provider, &QComboBox::activated, this, [this] {
         m_chat->setProviderId(m_provider->currentData().toString());
@@ -621,6 +630,7 @@ void MainWindow::openSettings()
     connect(w, &AiSettingsWidget::historyCleared, this, [this] { m_chat->deleteAllConversations(); });
     dlg.exec();
     applySettings();
+    m_input->setFocus();
 }
 
 } // namespace zion

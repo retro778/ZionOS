@@ -41,11 +41,11 @@
         </message>
         <message>
             <source>ZionOS is a community distribution built on Debian. Security updates for the base system are provided by the Debian project through the normal update tools. Documentation is installed in /usr/share/doc/zionos-base.</source>
-            <translation>ZionOS היא הפצה קהילתית המבוססת על Debian. עדכוני האבטחה של מערכת הבסיס מסופקים על ידי פרויקט Debian באמצעות כלי העדכון הרגילים. התיעוד מותקן בנתיב ⁦/usr/share/doc/zionos-base⁩.</translation>
+            <translation>‏ZionOS היא הפצה קהילתית המבוססת על Debian. עדכוני האבטחה של מערכת הבסיס מסופקים על ידי פרויקט Debian באמצעות כלי העדכון הרגילים. התיעוד מותקן בנתיב ⁦/usr/share/doc/zionos-base⁩.</translation>
         </message>
         <message>
             <source>ZionOS is not affiliated with or endorsed by the Debian Project. Debian is a registered trademark of Software in the Public Interest, Inc.</source>
-            <translation>ZionOS אינה קשורה לפרויקט Debian ואינה נתמכת על ידו. Debian הוא סימן מסחרי רשום של Software in the Public Interest, Inc.</translation>
+            <translation>‏ZionOS אינה קשורה לפרויקט Debian ואינה נתמכת על ידו. Debian הוא סימן מסחרי רשום של Software in the Public Interest, Inc.</translation>
         </message>
         <message>
             <source>Copy details</source>
@@ -90,7 +90,7 @@
             <source>%n conversation(s) deleted.</source>
             <translation>
                 <numerusform>שיחה אחת נמחקה.</numerusform>
-                <numerusform>%n שיחות נמחקו.</numerusform>
+                <numerusform>‏%n שיחות נמחקו.</numerusform>
             </translation>
         </message>
         <message>
@@ -166,10 +166,6 @@
             <translation>מפתח שמור במחזיק המפתחות של המערכת (מוצפן).</translation>
         </message>
         <message>
-            <source>The system keyring is not available or is locked: %1</source>
-            <translation>מחזיק המפתחות של המערכת אינו זמין או נעול: %1</translation>
-        </message>
-        <message>
             <source>No key saved.</source>
             <translation>לא נשמר מפתח.</translation>
         </message>
@@ -183,7 +179,7 @@
         </message>
         <message>
             <source>ZionOS never stores API keys in plain text. To save the key permanently, open KDE Wallet Manager, enable or unlock the wallet, and try again.</source>
-            <translation>ZionOS לעולם אינה שומרת מפתחות API כטקסט גלוי. כדי לשמור את המפתח באופן קבוע, יש לפתוח את מנהל הארנקים של KDE, להפעיל את הארנק או לבטל את נעילתו, ולנסות שוב.</translation>
+            <translation>‏ZionOS לעולם אינה שומרת מפתחות API כטקסט גלוי. כדי לשמור את המפתח באופן קבוע, יש לפתוח את מנהל הארנקים של KDE, להפעיל את הארנק או לבטל את נעילתו, ולנסות שוב.</translation>
         </message>
         <message>
             <source>Use for this session only</source>
@@ -208,6 +204,14 @@
         <message>
             <source>The model list could not be loaded (%1).</source>
             <translation>לא ניתן היה לטעון את רשימת המודלים (%1).</translation>
+        </message>
+        <message>
+            <source>Held for this session only (not saved).</source>
+            <translation>מוחזק להפעלה זו בלבד (לא נשמר).</translation>
+        </message>
+        <message>
+            <source>The system keyring is not available or is locked.</source>
+            <translation>מחזיק המפתחות של המערכת אינו זמין או נעול.</translation>
         </message>
     </context>
     <context>
@@ -364,7 +368,7 @@ The assistant only suggests commands — it never runs them. Suggested commands 
         </message>
         <message>
             <source>%1 (%2) — remove</source>
-            <translation>%1 (%2) — הסרה</translation>
+            <translation>‏%1 (%2) — הסרה</translation>
         </message>
         <message>
             <source>Attach a text file</source>
@@ -469,7 +473,7 @@ The assistant only suggests commands — it never runs them. Suggested commands 
             <source>%n character(s)</source>
             <translation>
                 <numerusform>תו אחד</numerusform>
-                <numerusform>%n תווים</numerusform>
+                <numerusform>‏%n תווים</numerusform>
             </translation>
         </message>
         <message>
@@ -574,7 +578,7 @@ The assistant only suggests commands — it never runs them. Suggested commands 
         </message>
         <message>
             <source>Meta (Windows key) + Space</source>
-            <translation>Meta (מקש Windows) + רווח</translation>
+            <translation>‏Meta (מקש Windows) + רווח</translation>
         </message>
         <message>
             <source>Ctrl + Shift</source>
@@ -586,7 +590,7 @@ The assistant only suggests commands — it never runs them. Suggested commands 
         </message>
         <message>
             <source>Alt + Space</source>
-            <translation>Alt + רווח</translation>
+            <translation>‏Alt + רווח</translation>
         </message>
         <message>
             <source>Keyboard layouts</source>
@@ -682,7 +686,7 @@ The assistant only suggests commands — it never runs them. Suggested commands 
         </message>
         <message>
             <source>ZionOS installs software from the Debian archive with APT. Security updates come directly from Debian. Use Discover to browse, install and update software.</source>
-            <translation>ZionOS מתקינה תוכנה מארכיון Debian באמצעות APT. עדכוני האבטחה מגיעים ישירות מ־Debian. אפשר להשתמש ב־Discover כדי לעיין בתוכנות, להתקין ולעדכן אותן.</translation>
+            <translation>‏ZionOS מתקינה תוכנה מארכיון Debian באמצעות APT. עדכוני האבטחה מגיעים ישירות מ־Debian. אפשר להשתמש ב־Discover כדי לעיין בתוכנות, להתקין ולעדכן אותן.</translation>
         </message>
         <message>
             <source>Open Discover</source>
@@ -698,7 +702,7 @@ The assistant only suggests commands — it never runs them. Suggested commands 
         </message>
         <message>
             <source>Flatpak can install additional applications that are not packaged by Debian. Flathub is a third-party repository: its applications are not reviewed by Debian or ZionOS. It is not enabled unless you choose to add it. It is added for your user account only.</source>
-            <translation>Flatpak מאפשר להתקין יישומים נוספים שאינם ארוזים על ידי Debian. ‏Flathub הוא מאגר של צד שלישי: היישומים שבו אינם נבדקים על ידי Debian או ZionOS. הוא אינו מופעל אלא אם בחרת להוסיף אותו, והוא מתווסף לחשבון המשתמש שלך בלבד.</translation>
+            <translation>‏Flatpak מאפשר להתקין יישומים נוספים שאינם ארוזים על ידי Debian. ‏Flathub הוא מאגר של צד שלישי: היישומים שבו אינם נבדקים על ידי Debian או ZionOS. הוא אינו מופעל אלא אם בחרת להוסיף אותו, והוא מתווסף לחשבון המשתמש שלך בלבד.</translation>
         </message>
         <message>
             <source>Add the Flathub repository</source>
@@ -710,15 +714,15 @@ The assistant only suggests commands — it never runs them. Suggested commands 
         </message>
         <message>
             <source>Flatpak is not installed.</source>
-            <translation>Flatpak אינו מותקן.</translation>
+            <translation>‏Flatpak אינו מותקן.</translation>
         </message>
         <message>
             <source>Flathub is enabled for your account.</source>
-            <translation>Flathub מופעל בחשבון שלך.</translation>
+            <translation>‏Flathub מופעל בחשבון שלך.</translation>
         </message>
         <message>
             <source>Flathub is not enabled.</source>
-            <translation>Flathub אינו מופעל.</translation>
+            <translation>‏Flathub אינו מופעל.</translation>
         </message>
         <message>
             <source>The Flatpak command failed:
@@ -735,7 +739,7 @@ The assistant only suggests commands — it never runs them. Suggested commands 
         </message>
         <message>
             <source>%1 — a Debian-based desktop in English and Hebrew.</source>
-            <translation>%1 — שולחן עבודה מבוסס Debian בעברית ובאנגלית.</translation>
+            <translation>‏%1 — שולחן עבודה מבוסס Debian בעברית ובאנגלית.</translation>
         </message>
         <message>
             <source>Language:</source>

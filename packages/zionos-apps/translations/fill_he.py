@@ -56,6 +56,8 @@ HE = {
 "A key is saved in the system keyring (encrypted).": "מפתח שמור במחזיק המפתחות של המערכת (מוצפן).",
 "The system keyring is not available or is locked: %1": "מחזיק המפתחות של המערכת אינו זמין או נעול: %1",
 "No key saved.": "לא נשמר מפתח.",
+"Held for this session only (not saved).": "מוחזק להפעלה זו בלבד (לא נשמר).",
+"The system keyring is not available or is locked.": "מחזיק המפתחות של המערכת אינו זמין או נעול.",
 "Keyring unavailable": "מחזיק המפתחות אינו זמין",
 "The key could not be saved because the system keyring (KDE Wallet / Secret Service) is not available or is locked.": "לא ניתן היה לשמור את המפתח מפני שמחזיק המפתחות של המערכת (KDE Wallet / Secret Service) אינו זמין או נעול.",
 "ZionOS never stores API keys in plain text. To save the key permanently, open KDE Wallet Manager, enable or unlock the wallet, and try again.": "ZionOS לעולם אינה שומרת מפתחות API כטקסט גלוי. כדי לשמור את המפתח באופן קבוע, יש לפתוח את מנהל הארנקים של KDE, להפעיל את הארנק או לבטל את נעילתו, ולנסות שוב.",
@@ -208,6 +210,28 @@ HE = {
 }
 
 
+RLM = "\u200f"
+
+
+def rtl_base(text):
+    """Make a Hebrew sentence that starts with a Latin word (a product name,
+    a %1 placeholder) a right-to-left paragraph by prefixing U+200F RIGHT-TO-LEFT
+    MARK. Without it the paragraph direction follows the first strong
+    character and the whole sentence is laid out left-to-right."""
+    import unicodedata
+    if not any("\u0590" <= ch <= "\u05ff" for ch in text) or text.startswith(RLM):
+        return text
+    for ch in text:
+        if ch == "%":            # placeholder: content unknown, usually Latin
+            return RLM + text
+        d = unicodedata.bidirectional(ch)
+        if d == "L":
+            return RLM + text
+        if d in ("R", "AL"):
+            return text
+    return text
+
+
 def main(path):
     tree = ET.parse(path)
     missing = []
@@ -227,9 +251,9 @@ def main(path):
             one, two, many = val
             texts = {1: [many], 2: [one, many], 3: [one, two, many], 4: [one, two, many, many]}[n]
             for t in texts:
-                ET.SubElement(tr, "numerusform").text = t
+                ET.SubElement(tr, "numerusform").text = rtl_base(t)
         else:
-            tr.text = val
+            tr.text = rtl_base(val)
         tr.attrib.pop("type", None)
     ET.indent(tree, space="    ")
     with open(path, "wb") as f:

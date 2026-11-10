@@ -3,6 +3,8 @@
 # Usage: scripts/test.sh unit                      C++ unit tests (+ASan/UBSan), static analysis
 #        scripts/test.sh live [bios|uefi|both] [ISO] [--desktop]
 #        scripts/test.sh install [bios|uefi] [ISO] install to a blank qcow2, reboot into it
+#        scripts/test.sh hebrew [bios|uefi] [ISO]  Hebrew typing, RTL UI, assistant conversation
+#        scripts/test.sh update [bios|uefi]       update the system installed by the install test
 #        scripts/test.sh all
 set -eu
 . "$(dirname "$0")/common.sh"
@@ -22,12 +24,22 @@ case "$MODE" in
         python3 tests/vm/test_live_boot.py "$ISO" --firmware "$FW" --out "$RES" "$@" || rc=$? ;;
     install)
         FW="${1:-uefi}"; ISO="${2:-$(default_iso)}"
-        python3 tests/vm/test_install.py "$ISO" --firmware "$FW" --out "$RES" || rc=$? ;;
+        python3 tests/vm/test_install.py "$ISO" --firmware "$FW" --out "$RES" --keep-disk || rc=$? ;;
+    hebrew)
+        FW="${1:-bios}"; ISO="${2:-$(default_iso)}"
+        python3 tests/vm/test_hebrew.py "$ISO" --firmware "$FW" --out "$RES" || rc=$? ;;
+    update)
+        FW="${1:-uefi}"
+        python3 tests/vm/test_update.py "/src/work/install-$FW.qcow2" --firmware "$FW" \
+            --vars "$RES/install-$FW/OVMF_VARS.fd" --out "$RES" || rc=$? ;;
     all)
         tests/unit.sh || rc=$?
         ISO=$(default_iso)
         python3 tests/vm/test_live_boot.py "$ISO" --firmware both --desktop --out "$RES" || rc=$?
-        python3 tests/vm/test_install.py "$ISO" --firmware uefi --out "$RES" || rc=$?
+        python3 tests/vm/test_hebrew.py "$ISO" --firmware bios --out "$RES" || rc=$?
+        python3 tests/vm/test_install.py "$ISO" --firmware uefi --out "$RES" --keep-disk || rc=$?
+        python3 tests/vm/test_update.py /src/work/install-uefi.qcow2 --firmware uefi \
+            --vars "$RES/install-uefi/OVMF_VARS.fd" --out "$RES" || rc=$?
         python3 tests/vm/test_install.py "$ISO" --firmware bios --out "$RES" || rc=$? ;;
     *) die "unknown mode $MODE" ;;
 esac

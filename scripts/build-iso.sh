@@ -36,7 +36,10 @@ cp /src/distro/profiles/"$PROFILE"/*.list.chroot config/package-lists/
 if [ -d "/src/distro/profiles/$PROFILE/config" ]; then
     cp -a "/src/distro/profiles/$PROFILE/config/." config/
 fi
-cp /src/out/packages/*.deb config/packages.chroot/
+# Debug-symbol packages stay in out/packages; they are not part of the image.
+for deb in /src/out/packages/*.deb; do
+    case "$deb" in *-dbgsym_*) ;; *) cp "$deb" config/packages.chroot/ ;; esac
+done
 # Allow building the desktop image before the applications exist.
 if [ -n "${ZIONOS_SKIP_APPS:-}" ]; then rm -f config/package-lists/zionos-apps.list.chroot; fi
 # Boot menu background is rendered from the SVG source of the artwork package.

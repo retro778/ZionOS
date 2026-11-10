@@ -60,7 +60,7 @@ private slots:
         QVERIFY2(f.open(QIODevice::ReadOnly), "zionos_he.ts missing");
         QXmlStreamReader xml(&f);
         int messages = 0;
-        QStringList unfinished;
+        QStringList unfinished, wrongDirection;
         QString source;
         while (!xml.atEnd()) {
             xml.readNext();
@@ -74,11 +74,21 @@ private slots:
                 const QString text = xml.readElementText(QXmlStreamReader::IncludeChildElements);
                 if (type == QLatin1String("unfinished") || (type.isEmpty() && text.trimmed().isEmpty()))
                     unfinished << source;
+                // A translation containing Hebrew must be a right-to-left
+                // paragraph even when it starts with a Latin name or a
+                // placeholder (those need a leading U+200F).
+                bool hasHebrew = false;
+                for (const QChar c : text)
+                    hasHebrew = hasHebrew || (c.unicode() >= 0x0590 && c.unicode() <= 0x05FF);
+                if (hasHebrew && (I18n::baseDirection(text) != Qt::RightToLeft
+                                  || (text.startsWith(QLatin1Char('%')))))
+                    wrongDirection << source;
             }
         }
         QVERIFY(!xml.hasError());
         QVERIFY2(messages > 50, "suspiciously few translatable strings");
         QVERIFY2(unfinished.isEmpty(), qPrintable(QStringLiteral("untranslated: ") + unfinished.join(QStringLiteral(" | "))));
+        QVERIFY2(wrongDirection.isEmpty(), qPrintable(QStringLiteral("Hebrew text with LTR base direction: ") + wrongDirection.join(QStringLiteral(" | "))));
     }
     void hebrewLoadsAndFlipsLayout()
     {

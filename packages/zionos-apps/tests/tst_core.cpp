@@ -9,6 +9,7 @@
 #include "core/sysinfo.h"
 
 #include <QTemporaryDir>
+#include <QTextBlock>
 #include <QTextDocument>
 #include <QtTest>
 
@@ -170,6 +171,33 @@ private slots:
         QCOMPARE(blocks[1].language, QStringLiteral("python"));
         QVERIFY(!blocks[1].isShellCommand());
         QCOMPARE(blocks[2].code, QStringLiteral("```\nnested\n```"));
+    }
+    void markdownDirectionPerParagraph()
+    {
+        QTextDocument doc;
+        Markdown::render(&doc, QStringLiteral(
+            "כדי להתקין תוכנה הריצו את הפקודה הבאה:\n\n"
+            "```sh\nsudo apt install vlc  # התקנה\n```\n\n"
+            "This paragraph is English.\n\n"
+            "עוד פסקה בעברית עם `ls -la` באמצע."));
+        QStringList seen;
+        for (QTextBlock b = doc.begin(); b.isValid(); b = b.next()) {
+            const QString t = b.text().trimmed();
+            if (t.isEmpty())
+                continue;
+            if (t.startsWith(QStringLiteral("sudo apt"))) {
+                QCOMPARE(b.textDirection(), Qt::LeftToRight); // code stays LTR despite Hebrew comment
+                QCOMPARE(b.blockFormat().layoutDirection(), Qt::LeftToRight);
+                seen << QStringLiteral("code");
+            } else if (t.startsWith(QStringLiteral("This"))) {
+                QCOMPARE(b.textDirection(), Qt::LeftToRight);
+                seen << QStringLiteral("en");
+            } else {
+                QCOMPARE(b.textDirection(), Qt::RightToLeft);
+                seen << QStringLiteral("he");
+            }
+        }
+        QCOMPARE(seen, (QStringList{QStringLiteral("he"), QStringLiteral("code"), QStringLiteral("en"), QStringLiteral("he")}));
     }
     void linkPolicy()
     {

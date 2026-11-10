@@ -17,16 +17,20 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardPaths>
+#include <QToolButton>
 #include <QVBoxLayout>
 
 namespace zion {
 
-static QPushButton *taskButton(const QString &icon, const QString &title, const QString &subtitle)
+static QToolButton *taskButton(const QString &icon, const QString &title, const QString &subtitle)
 {
-    auto *b = new QPushButton(QIcon::fromTheme(icon), title + QLatin1Char('\n') + subtitle);
+    auto *b = new QToolButton;
+    b->setIcon(QIcon::fromTheme(icon));
+    b->setText(title + QLatin1Char('\n') + subtitle);
+    b->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     b->setIconSize(QSize(40, 40));
     b->setMinimumHeight(72);
-    b->setStyleSheet(QStringLiteral("QPushButton { text-align: start; padding: 8px 14px; }"));
+    b->setStyleSheet(QStringLiteral("QToolButton { padding: 8px 14px; }"));
     b->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     return b;
 }
@@ -48,7 +52,7 @@ WelcomeWindow::WelcomeWindow(QWidget *parent) : QWidget(parent)
     auto *title = new QLabel(QStringLiteral("<h1>%1</h1>").arg(tr("Welcome to ZionOS").toHtmlEscaped()));
     title->setObjectName(QStringLiteral("welcomeTitle"));
     titles->addWidget(title);
-    auto *sub = new QLabel(tr("%1 — a Debian-based desktop in English and Hebrew.").arg(info.prettyName()));
+    auto *sub = new QLabel(tr("%1 — a Debian-based desktop in English and Hebrew.").arg(I18n::ltrIsolate(info.prettyName())));
     sub->setWordWrap(true);
     titles->addWidget(sub);
     header->addLayout(titles, 1);
@@ -77,11 +81,11 @@ WelcomeWindow::WelcomeWindow(QWidget *parent) : QWidget(parent)
     auto *grid = new QGridLayout;
     grid->setSpacing(10);
     int n = 0;
-    auto add = [&](QPushButton *b, const QString &program, const QStringList &args = {}) {
+    auto add = [&](QToolButton *b, const QString &program, const QStringList &args = {}) {
         b->setEnabled(programAvailable(program));
         if (!b->isEnabled())
             b->setToolTip(tr("Not installed"));
-        connect(b, &QPushButton::clicked, this, [this, program, args] { run(program, args); });
+        connect(b, &QToolButton::clicked, this, [this, program, args] { run(program, args); });
         grid->addWidget(b, n / 2, n % 2);
         ++n;
     };

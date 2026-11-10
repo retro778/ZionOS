@@ -1,0 +1,72 @@
+name: CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "Also build the desktop ISO and run install/update tests (needs KVM)"
+        type: boolean
+        default: false
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build builder image
+        run: scripts/env-prepare.sh
+      - name: Unit tests, sanitizers, static analysis
+        run: scripts/test.sh unit
+      - name: Build packages (runs the test suite again in the package build)
+        run: scripts/build-packages.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: out/packages/*.deb
+
+  minimal-iso:
+    runs-on: ubuntu-latest
+    needs: unit
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable KVM for the runner user (if available)
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm || true
+      - run: scripts/env-prepare.sh
+      - run: scripts/build-packages.sh zionos-system
+      - run: scripts/build-iso.sh minimal
+      - run: scripts/test.sh live both out/zionos-$(cat VERSION)-minimal-amd64.iso
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: minimal-test-results
+          path: out/test-results
+
+  desktop-full:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.full }}
+    runs-on: ubuntu-latest
+    needs: unit
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - run: scripts/env-prepare.sh
+      - run: scripts/build-packages.sh
+      - run: scripts/build-iso.sh desktop
+      - run: scripts/test.sh all
+      - run: scripts/release-metadata.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: desktop-test-results
+          path: |
+            out/test-results
+            out/SHA256SUMS
+            out/*.buildinfo.json
