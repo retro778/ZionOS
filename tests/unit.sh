@@ -20,7 +20,7 @@ export ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=halt_on_error=1:print_stacktrac
 if [ -z "${QUICK:-}" ]; then
     echo "== cppcheck =="
     cppcheck --quiet --std=c++20 --enable=warning,performance,portability --inline-suppr \
-        --error-exitcode=1 --suppress=missingIncludeSystem --suppress=unknownMacro \
+        --error-exitcode=1 --suppress=missingIncludeSystem --suppress=unknownMacro --suppress=normalCheckLevelMaxBranches \
         -I "$SRC" "$SRC/core" $( [ "${ZIONOS_GUI:-ON}" = ON ] && echo "$SRC/ui $SRC/welcome $SRC/settings $SRC/assistant" )
     echo "cppcheck: clean"
 fi

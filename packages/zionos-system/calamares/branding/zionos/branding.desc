@@ -1,0 +1,41 @@
+---
+componentName:   zionos
+
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 900px,620px
+windowPlacement: center
+
+strings:
+    productName:         ZionOS
+    shortProductName:    ZionOS
+    version:             @VERSION@ (@CODENAME@)
+    shortVersion:        @VERSION_SHORT@
+    versionedName:       ZionOS @VERSION_SHORT@
+    shortVersionedName:  ZionOS @VERSION_SHORT@
+    # The EFI boot loader directory stays "debian": Debian's signed GRUB
+    # looks for its configuration in EFI/debian, which keeps Secure Boot
+    # working with unmodified Debian boot binaries.
+    bootloaderEntryName: Debian
+    productUrl:          file:///usr/share/doc/zionos-base/README.md
+    supportUrl:          file:///usr/share/doc/zionos-base/README.md
+    knownIssuesUrl:      file:///usr/share/doc/zionos-base/README.md
+    releaseNotesUrl:     file:///usr/share/doc/zionos-base/README.md
+
+sidebar: widget
+navigation: widget
+
+images:
+    productLogo:         "zionos-logo.png"
+    productIcon:         "zionos-logo.png"
+    productWelcome:      "welcome.png"
+
+slideshow:               "show.qml"
+slideshowAPI: 2
+
+style:
+   SidebarBackground:    "#0b1f44"
+   SidebarText:          "#FFFFFF"
+   SidebarTextCurrent:   "#FFFFFF"
+   SidebarBackgroundCurrent: "#1b4f9c"

@@ -1,0 +1,26 @@
+#!/bin/sh
+# Applies ZionOS branding to the Calamares configuration shipped by
+# calamares-settings-debian. Run at image build time (live-build hook) and
+# again from this package's postinst so upgrades in the live image stay
+# consistent. Idempotent.
+set -e
+C=/etc/calamares
+[ -f "$C/settings.conf" ] || exit 0
+mkdir -p "$C/branding"
+rm -rf "$C/branding/zionos"
+cp -a /usr/share/zionos/calamares/branding/zionos "$C/branding/zionos"
+sed -i 's/^branding:.*/branding: zionos/' "$C/settings.conf"
+# Ask for one more explicit confirmation before the disk is modified.
+sed -i 's/^prompt-install:.*/prompt-install: true/' "$C/settings.conf"
+# Remove installer-only packages from the installed system.
+P="$C/modules/packages.conf"
+if [ -f "$P" ] && ! grep -q "zionos-calamares-settings" "$P"; then
+    sed -i "s/^\(\s*\)- 'calamares-settings-debian'/\1- 'calamares-settings-debian'\n\1- 'zionos-calamares-settings'\n\1- 'calamares'/" "$P"
+fi
+# Only the ZionOS launcher is shown.
+for f in /usr/share/applications/calamares-install-debian.desktop /usr/share/applications/calamares.desktop; do
+    if [ -f "$f" ] && ! grep -q '^NoDisplay=true' "$f"; then
+        echo 'NoDisplay=true' >> "$f"
+    fi
+done
+rm -f /etc/xdg/autostart/calamares-desktop-icon.desktop

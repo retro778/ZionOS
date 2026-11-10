@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=ZionOS Assistant
+Name[he]=העוזר של ZionOS
+Comment=Optional AI assistant (needs your own API key)
+Comment[he]=עוזר בינה מלאכותית אופציונלי (נדרש מפתח API משלך)
+Exec=zionos-assistant
+Icon=zionos-logo
+Terminal=false
+Categories=Utility;Qt;
+StartupNotify=true

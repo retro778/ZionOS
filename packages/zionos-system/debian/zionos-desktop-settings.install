@@ -1,0 +1,7 @@
+desktop/xdg/kxkbrc etc/xdg/
+desktop/xdg/kwalletrc etc/xdg/
+desktop/sddm/10-zionos.conf etc/sddm.conf.d/
+desktop/sddm/theme.conf.user usr/share/zionos/sddm/
+desktop/plasma-update/zionos-wallpaper.js usr/share/plasma/shells/org.kde.plasma.desktop/contents/updates/
+desktop/grub/zionos.cfg etc/default/grub.d/
+desktop/zionos-locale-setup usr/sbin/

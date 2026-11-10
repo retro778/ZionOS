@@ -158,7 +158,7 @@ class VM:
         """Press a key combination, e.g. key('ctrl', 'alt', 'f2')."""
         self.qmp_cmd("send-key", keys=[{"type": "qcode", "data": k} for k in keys],
                      **{"hold-time": hold})
-        time.sleep(0.15)
+        time.sleep(0.12 + hold / 1000.0)
 
     _KEYMAP = {" ": "spc", "\n": "ret", "-": "minus", ".": "dot", "/": "slash",
                ",": "comma", "=": "equal", ";": "semicolon", "'": "apostrophe",
@@ -205,6 +205,34 @@ class VM:
                     {"type": "btn", "data": {"down": down, "button": button}}])
                 time.sleep(0.06)
         time.sleep(0.2)
+
+    def screen_text(self, lang="eng"):
+        p = os.path.join(self.workdir, "_ocr.png")
+        self.screenshot(p)
+        return ocr(p, lang)
+
+    def wait_text(self, phrase, timeout=120, interval=4, lang="eng"):
+        """Wait until the phrase is visible on screen (OCR, whitespace-insensitive)."""
+        want = "".join(phrase.lower().split())
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            if want in "".join(self.screen_text(lang).lower().split()):
+                return True
+            time.sleep(interval)
+        return False
+
+    def click_text(self, phrase, dx=0, dy=0, timeout=60, lang="eng", double=False):
+        """Click on a visible label. Returns False if it never appears."""
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            p = os.path.join(self.workdir, "_find.png")
+            self.screenshot(p)
+            pos = find_text(p, phrase, lang)
+            if pos:
+                self.click(pos[0] + dx, pos[1] + dy, double=double)
+                return True
+            time.sleep(3)
+        return False
 
     def powerdown(self):
         self.qmp_cmd("system_powerdown")
@@ -284,6 +312,34 @@ def ocr(image, lang="eng"):
                        capture_output=True, text=True)
     os.unlink(tmp)
     return r.stdout
+
+
+def find_text(image, phrase, lang="eng"):
+    """Locate a phrase on a screenshot. Returns the (x, y) centre of the first
+    word of the best match in screen pixels, or None."""
+    from PIL import Image
+    scale = 2
+    with Image.open(image) as im:
+        im = im.convert("L").resize((im.width * scale, im.height * scale))
+        tmp = image + ".find.png"
+        im.save(tmp)
+    r = subprocess.run(["tesseract", tmp, "-", "-l", lang, "--psm", "11", "tsv"],
+                       capture_output=True, text=True)
+    os.unlink(tmp)
+    words = []
+    for line in r.stdout.splitlines()[1:]:
+        c = line.split("\t")
+        if len(c) >= 12 and c[11].strip():
+            words.append((c[11].strip(), int(c[6]), int(c[7]), int(c[8]), int(c[9])))
+    want = phrase.split()
+    norm = lambda w: "".join(ch for ch in w.lower() if ch.isalnum())  # noqa: E731
+    for i in range(len(words) - len(want) + 1):
+        if all(norm(words[i + j][0]) == norm(want[j]) for j in range(len(want))):
+            first, last = words[i], words[i + len(want) - 1]
+            x0, y0 = first[1], first[2]
+            x1, y1 = last[1] + last[3], last[2] + last[4]
+            return ((x0 + x1) // 2 // scale, (y0 + y1) // 2 // scale)
+    return None
 
 
 def wait_for(fn, timeout, interval=3, what="condition"):

@@ -1,0 +1,18 @@
+#!/bin/sh
+set -e
+if [ "$1" = configure ]; then
+    zionos-locale-setup || true
+    # Login screen background: the Breeze SDDM theme reads theme.conf.user.
+    # Only install ours when nobody has customised it.
+    t=/usr/share/sddm/themes/breeze
+    if [ -d "$t" ] && { [ ! -e "$t/theme.conf.user" ] || grep -q 'desktop-base\|ZionOS' "$t/theme.conf.user"; }; then
+        if [ -L "$t/theme.conf.user" ] || [ ! -e "$t/theme.conf.user" ] || ! grep -q ZionOS "$t/theme.conf.user"; then
+            rm -f "$t/theme.conf.user"
+            cp /usr/share/zionos/sddm/theme.conf.user "$t/theme.conf.user"
+        fi
+    fi
+    if command -v update-grub >/dev/null && [ -e /boot/grub/grub.cfg ]; then
+        update-grub || true
+    fi
+fi
+#DEBHELPER#

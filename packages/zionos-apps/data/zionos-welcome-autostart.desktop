@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Welcome to ZionOS
+Name[he]=ברוכים הבאים ל־ZionOS
+Exec=zionos-welcome --autostart
+Icon=zionos-logo
+Terminal=false
+NoDisplay=true
+X-KDE-autostart-phase=2

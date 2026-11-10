@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Welcome to ZionOS
+Name[he]=ברוכים הבאים ל־ZionOS
+Comment=Get started with ZionOS
+Comment[he]=התחלת העבודה עם ZionOS
+Exec=zionos-welcome
+Icon=zionos-logo
+Terminal=false
+Categories=System;Qt;
+StartupNotify=true

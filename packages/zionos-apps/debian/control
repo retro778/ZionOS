@@ -1,0 +1,49 @@
+Source: zionos-apps
+Section: utils
+Priority: optional
+Maintainer: ZionOS Developers <zionos-devel@localhost>
+Build-Depends: debhelper-compat (= 13), cmake (>= 3.25), ninja-build,
+ qt6-base-dev, qt6-tools-dev, qt6-tools-dev-tools, qt6-l10n-tools,
+ qtkeychain-qt6-dev, libgl1-mesa-dev
+Standards-Version: 4.7.2
+Rules-Requires-Root: no
+
+Package: zionos-apps-common
+Architecture: all
+Depends: ${misc:Depends}, zionos-artwork
+Description: ZionOS applications - translations
+ Hebrew translations shared by the ZionOS Welcome, Settings and Assistant
+ applications. English is built in.
+
+Package: zionos-welcome
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, zionos-apps-common (= ${source:Version}),
+ zionos-settings (= ${binary:Version}), qt6-translations-l10n
+Description: ZionOS welcome application
+ First-run window of ZionOS: language choice (English or Hebrew) and
+ shortcuts to installing the system, software, settings and the assistant.
+
+Package: zionos-settings
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, zionos-apps-common (= ${source:Version}),
+ qt6-translations-l10n
+Recommends: systemsettings, plasma-discover
+Suggests: flatpak
+Description: ZionOS settings and "About ZionOS"
+ ZionOS-specific settings: display language, English/Hebrew keyboard layouts
+ and switching shortcut, assistant providers and API keys, optional Flatpak
+ repository, and system information. Other settings are delegated to KDE
+ System Settings.
+
+Package: zionos-assistant
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, zionos-apps-common (= ${source:Version}),
+ ca-certificates, qt6-translations-l10n
+Recommends: kwalletmanager, libpam-kwallet5
+Description: ZionOS desktop AI assistant
+ Optional desktop assistant that talks to the OpenAI or Anthropic API with a
+ key supplied by the user. Keys are kept in the desktop keyring, replies are
+ streamed, conversation history stays on the local computer, and suggested
+ commands are only displayed - never executed.
+ .
+ The assistant is not required for any other part of ZionOS.

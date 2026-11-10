@@ -29,7 +29,7 @@ lb config noauto \
     --bootloaders "grub-pc,grub-efi" \
     --debian-installer none \
     --apt-recommends true \
-    --firmware-chroot true \
+    --firmware-chroot "${ZIONOS_ALL_FIRMWARE:-false}" \
     --firmware-binary false \
     --memtest none \
     --linux-flavours amd64 \

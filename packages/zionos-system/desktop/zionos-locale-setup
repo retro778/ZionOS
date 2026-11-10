@@ -1,0 +1,17 @@
+#!/bin/sh
+# Ensures the English and Hebrew UTF-8 locales exist on the system.
+set -e
+changed=0
+for l in "en_US.UTF-8 UTF-8" "he_IL.UTF-8 UTF-8"; do
+    if ! grep -qx "$l" /etc/locale.gen 2>/dev/null; then
+        if grep -qx "# $l" /etc/locale.gen 2>/dev/null; then
+            sed -i "s/^# $l\$/$l/" /etc/locale.gen
+        else
+            echo "$l" >> /etc/locale.gen
+        fi
+        changed=1
+    fi
+done
+if [ "$changed" = 1 ] || ! locale -a 2>/dev/null | grep -qi '^he_IL\.utf-\?8$'; then
+    locale-gen >/dev/null
+fi

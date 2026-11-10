@@ -20,3 +20,20 @@ Depends: ${misc:Depends}
 Description: ZionOS logos, wallpapers and boot artwork
  Original ZionOS artwork: logo icons, the default desktop wallpaper and the
  boot menu background.
+
+Package: zionos-desktop-settings
+Architecture: all
+Depends: ${misc:Depends}, zionos-artwork, locales
+Description: ZionOS desktop defaults
+ System-wide defaults for the ZionOS KDE Plasma desktop: English and Hebrew
+ keyboard layouts with Alt+Shift switching, generated en_US and he_IL
+ locales, the default wallpaper, the login screen background and the boot
+ menu appearance. All of these are defaults that users can change.
+
+Package: zionos-calamares-settings
+Architecture: all
+Depends: ${misc:Depends}, calamares, calamares-settings-debian, zionos-artwork
+Description: ZionOS branding for the Calamares installer
+ Branding (name, logo, colours, slideshow) and the "Install ZionOS" launcher
+ for the Calamares installer used on the ZionOS live image. The installation
+ logic itself comes unmodified from calamares-settings-debian.

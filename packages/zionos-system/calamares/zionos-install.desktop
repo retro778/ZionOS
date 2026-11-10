@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Install ZionOS
+Name[he]=התקנת ZionOS
+GenericName=System Installer
+GenericName[he]=תוכנית התקנה
+Comment=Install ZionOS to this computer
+Comment[he]=התקנת ZionOS במחשב זה
+Exec=zionos-install
+Icon=zionos-logo
+Terminal=false
+Categories=Qt;System;
+Keywords=calamares;system;installer;
+StartupNotify=true

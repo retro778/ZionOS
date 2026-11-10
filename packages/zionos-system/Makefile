@@ -28,6 +28,11 @@ images: | $(GEN)
 	rsvg-convert -w 1920 -h 1080 artwork/zionos-wallpaper.svg -o $(GEN)/zionos-wallpaper-1920x1080.png
 	rsvg-convert -w 3840 -h 2160 artwork/zionos-wallpaper.svg -o $(GEN)/zionos-wallpaper-3840x2160.png
 	rsvg-convert -w 1024 -h 768 artwork/zionos-boot.svg -o $(GEN)/zionos-boot.png
+	mkdir -p $(GEN)/calamares
+	rsvg-convert -w 256 -h 256 artwork/zionos-logo.svg -o $(GEN)/calamares/zionos-logo.png
+	rsvg-convert -w 900 -h 500 artwork/zionos-installer.svg -o $(GEN)/calamares/welcome.png
+	rsvg-convert -w 900 -h 500 artwork/zionos-installer.svg -o $(GEN)/calamares/slide1.png
+	for f in calamares/branding/zionos/branding.desc; do mkdir -p $(GEN)/$$(dirname $$f); $(SUBST) $$f > $(GEN)/$$f; done
 	for s in 16 22 24 32 48 64 128 256; do \
 	  rsvg-convert -w $$s -h $$s artwork/zionos-logo.svg -o $(GEN)/zionos-logo-$$s.png; done
 

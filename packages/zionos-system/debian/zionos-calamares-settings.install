@@ -1,0 +1,8 @@
+gen/calamares/branding/zionos/branding.desc usr/share/zionos/calamares/branding/zionos/
+calamares/branding/zionos/show.qml usr/share/zionos/calamares/branding/zionos/
+gen/calamares/zionos-logo.png usr/share/zionos/calamares/branding/zionos/
+gen/calamares/welcome.png usr/share/zionos/calamares/branding/zionos/
+gen/calamares/slide1.png usr/share/zionos/calamares/branding/zionos/
+calamares/bin/zionos-install usr/bin/
+calamares/zionos-install.desktop usr/share/applications/
+calamares/zionos-calamares-apply usr/sbin/

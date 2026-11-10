@@ -1,0 +1,8 @@
+#!/bin/sh
+# Starts the ZionOS installer (Calamares) from the live session.
+# Calamares shows the target disk and asks for confirmation before any
+# change is written.
+if [ -x /usr/bin/calamares-install-debian ]; then
+    exec /usr/bin/calamares-install-debian "$@"
+fi
+exec pkexec calamares "$@"

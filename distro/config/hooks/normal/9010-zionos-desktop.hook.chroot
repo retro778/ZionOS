@@ -1,0 +1,15 @@
+#!/bin/sh
+# Image-level integration for the ZionOS desktop profile. Everything here is
+# a no-op on the minimal profile (the packages are simply absent).
+set -e
+[ -x /usr/sbin/zionos-calamares-apply ] && zionos-calamares-apply
+[ -x /usr/sbin/zionos-locale-setup ] && zionos-locale-setup
+# Default locale of the image; the live boot menu and the installer override it.
+if [ -x /usr/sbin/update-locale ]; then
+    update-locale LANG=en_US.UTF-8
+fi
+# ZionOS Welcome replaces KDE's welcome centre at first login.
+if dpkg -s zionos-welcome >/dev/null 2>&1 && dpkg -s plasma-welcome >/dev/null 2>&1; then
+    apt-get -y purge plasma-welcome
+fi
+exit 0

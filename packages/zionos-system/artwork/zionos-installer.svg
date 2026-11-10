@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ZionOS installer welcome / slideshow image. Original artwork. License: CC-BY-SA-4.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1f44"/><stop offset="0.6" stop-color="#16498f"/><stop offset="1" stop-color="#1fa3c4"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b4f9c"/><stop offset="1" stop-color="#27b7d9"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="500" fill="url(#sky)"/>
+  <path d="M0 400 L220 330 L450 410 L700 320 L900 380 V500 H0z" fill="#081530" fill-opacity="0.5"/>
+  <g transform="translate(354 90) scale(0.75)">
+    <rect x="16" y="16" width="224" height="224" rx="52" fill="url(#g)" stroke="#ffffff" stroke-opacity="0.35" stroke-width="4"/>
+    <path d="M72 72h112v24l-74 64h74v24H72v-24l74-64H72z" fill="#ffffff"/>
+  </g>
+  <text x="450" y="330" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="44" fill="#ffffff">ZionOS</text>
+</svg>

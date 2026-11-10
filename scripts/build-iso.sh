@@ -13,7 +13,7 @@ if ! inside_container; then
     # --privileged: live-build needs mount(2)/chroot(2) inside the container.
     # It never touches host disks; it works only in work/lb-<profile>.
     in_container --privileged -e ZIONOS_CLEAN=${ZIONOS_CLEAN:-} \
-        -e ZIONOS_MIRROR=${ZIONOS_MIRROR:-} -- scripts/build-iso.sh "$PROFILE"
+        -e ZIONOS_MIRROR=${ZIONOS_MIRROR:-} -e ZIONOS_SKIP_APPS=${ZIONOS_SKIP_APPS:-} -- scripts/build-iso.sh "$PROFILE"
     exit $?
 fi
 
@@ -37,6 +37,8 @@ if [ -d "/src/distro/profiles/$PROFILE/config" ]; then
     cp -a "/src/distro/profiles/$PROFILE/config/." config/
 fi
 cp /src/out/packages/*.deb config/packages.chroot/
+# Allow building the desktop image before the applications exist.
+if [ -n "${ZIONOS_SKIP_APPS:-}" ]; then rm -f config/package-lists/zionos-apps.list.chroot; fi
 # Boot menu background is rendered from the SVG source of the artwork package.
 rsvg-convert -w 1024 -h 768 /src/packages/zionos-system/artwork/zionos-boot.svg \
     -o config/bootloaders/grub-pc/splash.png

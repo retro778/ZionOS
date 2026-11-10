@@ -1,0 +1,5 @@
+zionos-apps (0.1.0) trixie; urgency=medium
+
+  * Initial release: ZionOS Welcome, Settings and Assistant.
+
+ -- ZionOS Developers <zionos-devel@localhost>  Tue, 10 Nov 2026 21:40:11 +0200

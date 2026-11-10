@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=ZionOS Settings
+Name[he]=הגדרות ZionOS
+Comment=Language, keyboard, assistant and system information
+Comment[he]=שפה, מקלדת, העוזר ומידע על המערכת
+Exec=zionos-settings
+Icon=zionos-logo
+Terminal=false
+Categories=Settings;Qt;
+StartupNotify=true

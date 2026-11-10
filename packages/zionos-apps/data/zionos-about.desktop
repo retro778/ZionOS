@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=About ZionOS
+Name[he]=על אודות ZionOS
+Comment=Version, base system and support information
+Comment[he]=גרסה, מערכת הבסיס ומידע על תמיכה
+Exec=zionos-settings --page about
+Icon=zionos-logo
+Terminal=false
+Categories=System;Qt;
+StartupNotify=true
