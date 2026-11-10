@@ -84,6 +84,7 @@ HE = {
 "You": "את/ה",
 "Assistant · %1": "העוזר · %1",
 "Waiting for the reply…": "ממתין לתשובה…",
+"Waiting for the system keyring… If a KDE Wallet window is open, answer it, or press Stop.": "ממתין למחזיק המפתחות של המערכת… אם נפתח חלון של KDE Wallet, יש להשיב לו, או ללחוץ על ״עצירה״.",
 "ZionOS Assistant": "העוזר של ZionOS",
 "Assistant": "העוזר",
 "New chat": "שיחה חדשה",

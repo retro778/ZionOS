@@ -109,7 +109,7 @@ def run(vm, rep, outdir, user="zion", live=True):
         rep.check("apps: %s starts" % app.split()[0], out.startswith("up"), out)
     time.sleep(3)
     vm.screenshot(os.path.join(outdir, "zionos-apps.png"))
-    g("pkill -u %s -f zionos-settings; pkill -u %s -f zionos-assistant; true" % (user, user))
+    g("pkill -u %s -f '[z]ionos-settings'; pkill -u %s -f '[z]ionos-assistant'; true" % (user, user))
 
     rc, out, _ = g("zionos-assistant --version; dpkg -s zionos-assistant | grep -E '^(Status|Version)'")
     rep.check("packaging: zionos-assistant installed from .deb", "install ok installed" in out, out.replace("\n", " "))

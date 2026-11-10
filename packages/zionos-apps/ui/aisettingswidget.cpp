@@ -129,6 +129,12 @@ AiSettingsWidget::AiSettingsWidget(CredentialStore *store, QList<ChatProvider *>
     refreshAllStatuses(0);
 }
 
+void AiSettingsWidget::focusKeyField(const QString &providerId)
+{
+    if (m_ui.contains(providerId))
+        m_ui[providerId].key->setFocus(Qt::OtherFocusReason);
+}
+
 void AiSettingsWidget::refreshAllStatuses(qsizetype index)
 {
     // One keyring request at a time: if the keyring has to ask the user

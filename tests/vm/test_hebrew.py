@@ -57,7 +57,7 @@ def run(iso, firmware, outdir):
                   " ".join(text.split())[:120])
         rc, out, _ = session("qdbus6 org.kde.KWin /KWin org.kde.KWin.supportInformation 2>/dev/null | grep -i -m1 'layoutDirection\\|rightToLeft'; "
                              "kreadconfig6 --file kdeglobals --group Locale --key Language 2>/dev/null; echo; echo $LANG")
-        g("pkill -u zion -f '^zionos-welcome'; true")
+        g("pkill -u zion -f '[z]ionos-welcome'; true")
 
         # --- typing with layout switching -----------------------------------
         vm.key("alt", "f2"); time.sleep(3)
@@ -70,10 +70,10 @@ def run(iso, firmware, outdir):
         rc, out, _ = g("cat /tmp/typed.txt")
         rep.check("typing: Alt+Shift switches to Hebrew and back", out.strip() == "שלום עולם abc", repr(out))
         # Hebrew file name created from the terminal, typed on the keyboard.
-        vm.type("touch /tmp/"); vm.key("alt", "shift"); time.sleep(1); vm.type("neuc.")
-        vm.key("alt", "shift"); time.sleep(1); vm.type("txt"); vm.key("ret"); time.sleep(1)
-        rc, out, _ = g("ls /tmp | grep txt")
-        rep.check("file names: Hebrew name typed in the terminal", "קובץ.txt" in out, out)
+        vm.type("touch /tmp/"); vm.key("alt", "shift"); time.sleep(1); vm.type("akuo")
+        vm.key("alt", "shift"); time.sleep(1); vm.type(".txt"); vm.key("ret"); time.sleep(3)
+        rc, out, _ = g("ls /tmp | grep txt | tr '\\n' ' '")
+        rep.check("file names: Hebrew name typed in the terminal", "שלום.txt" in out.split(), out)
         vm.screenshot(os.path.join(wd, "02-konsole.png"))
         g("pkill -u zion konsole; true")
 
@@ -84,7 +84,7 @@ def run(iso, firmware, outdir):
         text = ocr(shot, "heb+eng")
         rep.check("dialogs: ZionOS Settings is translated and laid out for Hebrew",
                   "מקלדת" in text and ("פריסות" in text or "עברית" in text), " ".join(text.split())[:160])
-        g("pkill -u zion -f '^zionos-settings'; true")
+        g("pkill -u zion -f '[z]ionos-settings'; true")
 
         # --- assistant conversation in Hebrew ----------------------------------
         with open(os.path.join(HERE, "mock_provider.py"), "rb") as f:
@@ -92,7 +92,7 @@ def run(iso, firmware, outdir):
         # Keep KDE Wallet's first-use wizard out of the way: with the wallet
         # disabled the keyring is "unavailable", which is exactly the path
         # that must offer session-only storage instead of plaintext.
-        session("kwriteconfig6 --file kwalletrc --group Wallet --key Enabled false; "
+        session("kwriteconfig6 --file kwalletrc --group Wallet --key Enabled false; pkill -u zion kwalletd6; "
                 "rm -f /tmp/mock-provider.jsonl; (setsid python3 /tmp/mock_provider.py >/tmp/mock.log 2>&1 &)")
         vm.key("alt", "f2"); time.sleep(3)
         vm.type("env ZIONOS_TEST_ANTHROPIC_URL=http://127.0.0.1:8765 zionos-assistant"); time.sleep(2)
@@ -123,7 +123,7 @@ def run(iso, firmware, outdir):
 
         # 3. Enter a (fake) key: keyring unavailable -> session-only storage.
         vm.key("ctrl", "comma"); time.sleep(4)
-        vm.key("tab"); vm.type(FAKE_KEY); vm.key("ret"); time.sleep(4)
+        vm.type(FAKE_KEY); vm.key("ret"); time.sleep(4)
         shot = vm.screenshot(os.path.join(wd, "06-keyring-unavailable.png"))
         text = ocr(shot, "heb+eng")
         rep.check("keys: unavailable keyring is explained, session-only offered",
@@ -175,6 +175,17 @@ def run(iso, firmware, outdir):
                   clip == "sudo apt update", repr(clip))
         rc, out, _ = g("grep -c 'apt update' /var/log/apt/history.log 2>/dev/null || echo 0")
         rep.check("commands: the proposed command was not run", out.strip() == "0", out)
+
+        # --- installer language (nothing is installed here) --------------------
+        g("pkill -u zion -f '[z]ionos-assistant'; true")
+        vm.key("alt", "f2"); time.sleep(3)
+        vm.type("zionos-install"); time.sleep(2); vm.key("ret"); time.sleep(30)
+        shot = vm.screenshot(os.path.join(wd, "08-installer-he.png"))
+        text = " ".join(ocr(shot, "heb+eng").split())
+        hebrew_letters = sum(1 for ch in text if "\u05d0" <= ch <= "\u05ea")
+        rep.check("installer: Calamares starts in Hebrew in a Hebrew session",
+                  "ZionOS" in text and hebrew_letters > 40, text[:200])
+        g("pkill calamares; [ -e /etc/fstab.orig.calamares ] && mv /etc/fstab.orig.calamares /etc/fstab; true")
 
         try:
             g("systemctl poweroff", timeout=20)

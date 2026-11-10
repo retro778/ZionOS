@@ -98,6 +98,31 @@ def install(iso, disk, firmware, wd, rep):
     return True
 
 
+FAKE_KEY = "sk-ant-test-vm-0000000000000000"
+
+
+def keyring_check(vm, rep, wd):
+    """Save a (fake) API key through the assistant's settings dialog and
+    confirm it is stored in KDE Wallet - unlocked by the login password via
+    PAM - and nowhere in plain text."""
+    vm.guest("pkill -u %s -f '[z]ionos-(welcome|settings|assistant)'; true" % USER)
+    vm.key("alt", "f2"); time.sleep(3)
+    vm.type("zionos-assistant"); time.sleep(2); vm.key("ret"); time.sleep(9)
+    vm.key("ctrl", "comma"); time.sleep(6)       # Settings and API keys
+    vm.type(FAKE_KEY); vm.key("ret"); time.sleep(6)
+    vm.screenshot(os.path.join(wd, "11-key-saved.png"))
+    vm.key("esc"); time.sleep(1)
+    q = ("export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus QT_QPA_PLATFORM=offscreen; "
+         "kwallet-query -r anthropic-api-key -f zionos-assistant kdewallet 2>&1 | head -1")
+    rc, out, _ = vm.guest(q, user=USER)
+    rep.check("keyring: API key saved from the UI is stored in KDE Wallet", out.strip() == FAKE_KEY, out[:120])
+    rc, out, _ = vm.guest("grep -rl '%s' /home/%s /tmp /var/log 2>/dev/null | head -3; "
+                          "pgrep -u %s -a kwalletd6 | grep -c pam-login" % (FAKE_KEY, USER, USER))
+    rep.check("keyring: no plaintext copy of the key on disk; wallet unlocked by login",
+              out.strip() == "1", out.replace("\n", " | "))
+    vm.guest("pkill -u %s -f '[z]ionos-assistant'; true" % USER)
+
+
 def verify(disk, firmware, wd, rep, vars_file):
     with VM(name="zionos-installed-" + firmware, disk=disk, firmware=firmware, workdir=wd,
             vars_file=vars_file, audio=True) as vm:
@@ -162,6 +187,7 @@ def verify(disk, firmware, wd, rep, vars_file):
             vm.screenshot(os.path.join(wd, "login-failure.png"))
         if rep.check("installed: graphical login with the installed user's password", logged_in):
             desktop_checks.run(vm, rep, wd, user=USER, live=False)
+            keyring_check(vm, rep, wd)
 
         # Restart, then a clean shutdown.
         try:

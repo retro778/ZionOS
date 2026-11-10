@@ -117,6 +117,7 @@ void ChatController::send(const QString &text, const QList<Attachment> &attachme
 
     m_waitingForKey = true;
     emit busyChanged(true);
+    emit waitingForKey(m_providerId);
     const quint64 gen = ++m_generation;
     const QString pid = m_providerId;
     m_credentials->read(pid, [this, gen, pid](const CredentialStore::Result &r, const QString &key) {

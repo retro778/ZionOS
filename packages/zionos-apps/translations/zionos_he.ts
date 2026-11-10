@@ -466,6 +466,10 @@ The assistant only suggests commands — it never runs them. Suggested commands 
             <source>Assistant settings</source>
             <translation>הגדרות העוזר</translation>
         </message>
+        <message>
+            <source>Waiting for the system keyring… If a KDE Wallet window is open, answer it, or press Stop.</source>
+            <translation>ממתין למחזיק המפתחות של המערכת… אם נפתח חלון של KDE Wallet, יש להשיב לו, או ללחוץ על ״עצירה״.</translation>
+        </message>
     </context>
     <context>
         <name>zion::MessageWidget</name>

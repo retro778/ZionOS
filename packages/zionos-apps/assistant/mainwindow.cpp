@@ -72,7 +72,18 @@ MainWindow::MainWindow(QWidget *parent)
         addMessage(MessageWidget::User, tr("You"))->setPlainText(MessageWidget::collapseAttachments(composed));
         scrollToBottom();
     });
+    connect(m_chat, &ChatController::waitingForKey, this, [this] {
+        // Normally instant. If the keyring needs the user (unlock, first-use
+        // wizard) its window may open behind this one, so say what is awaited.
+        QTimer::singleShot(1500, this, [this] {
+            if (m_chat->busy() && !m_streaming) {
+                m_usage->setText(tr("Waiting for the system keyring… If a KDE Wallet window is open, answer it, or press Stop."));
+                m_usage->setVisible(true);
+            }
+        });
+    });
     connect(m_chat, &ChatController::assistantStarted, this, [this] {
+        m_usage->setVisible(false);
         m_streamText.clear();
         m_streaming = addMessage(MessageWidget::Assistant,
                                  tr("Assistant · %1").arg(I18n::ltrIsolate(m_chat->model())));
@@ -557,6 +568,7 @@ void MainWindow::onFinished(const QString &text, const ChatResult &result)
 void MainWindow::onFailed(const QString &partial, const ProviderError &error)
 {
     m_renderTimer.stop();
+    m_usage->setVisible(false);
     if (m_streaming) {
         if (partial.isEmpty()) {
             m_streaming->deleteLater();
@@ -586,6 +598,7 @@ void MainWindow::onFailed(const QString &partial, const ProviderError &error)
 
 void MainWindow::onKeyNeeded(const QString &providerId, bool unavailable, const QString &detail)
 {
+    m_usage->setVisible(false);
     // The user bubble was added optimistically; nothing was sent.
     if (m_messages->count() >= 2) {
         if (auto *last = qobject_cast<MessageWidget *>(m_messages->itemAt(m_messages->count() - 2)->widget());
@@ -628,6 +641,9 @@ void MainWindow::openSettings()
     connect(box, &QDialogButtonBox::rejected, &dlg, &QDialog::accept);
     lay->addWidget(box);
     connect(w, &AiSettingsWidget::historyCleared, this, [this] { m_chat->deleteAllConversations(); });
+    // Start in the key field of the provider in use: entering a key is the
+    // most common reason to open this dialog.
+    QTimer::singleShot(0, w, [w, id = m_chat->providerId()] { w->focusKeyField(id); });
     dlg.exec();
     applySettings();
     m_input->setFocus();

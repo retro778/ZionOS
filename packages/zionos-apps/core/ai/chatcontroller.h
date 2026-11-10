@@ -58,6 +58,8 @@ public slots:
 signals:
     void conversationReset();                       ///< whole conversation replaced
     void userMessageAdded(const QString &text);
+    /// The keyring is being asked for the key (may involve an unlock prompt).
+    void waitingForKey(const QString &providerId);
     void assistantStarted();
     void assistantDelta(const QString &delta);
     /// The turn ended normally. @p text is the complete reply.

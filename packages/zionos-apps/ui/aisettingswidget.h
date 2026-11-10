@@ -30,6 +30,9 @@ public:
     AiSettingsWidget(ai::CredentialStore *store, QList<ai::ChatProvider *> providers,
                      bool allowSessionKeys, QWidget *parent = nullptr);
 
+    /// Puts the keyboard focus in the API key field of @p providerId.
+    void focusKeyField(const QString &providerId);
+
 signals:
     void settingsChanged();
     void historyCleared();

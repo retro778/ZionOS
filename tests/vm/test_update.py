@@ -64,8 +64,11 @@ def sign_repo(repo, env):
 
 
 def serve(repo):
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=repo)
-    handler.log_message = lambda *a, **k: None
+    class Quiet(http.server.SimpleHTTPRequestHandler):
+        def log_message(self, *args):
+            pass
+
+    handler = functools.partial(Quiet, directory=repo)
     srv = http.server.ThreadingHTTPServer(("0.0.0.0", PORT), handler)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     return srv
