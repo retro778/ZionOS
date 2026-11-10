@@ -33,6 +33,9 @@ public:
     /// Puts the keyboard focus in the API key field of @p providerId.
     void focusKeyField(const QString &providerId);
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
 signals:
     void settingsChanged();
     void historyCleared();
@@ -60,6 +63,7 @@ private:
     ai::CredentialStore *m_store;
     QList<ai::ChatProvider *> m_providers;
     bool m_allowSession;
+    bool m_statusRequested = false;
     QHash<QString, ProviderUi> m_ui;
     QComboBox *m_defaultProvider = nullptr;
 };

@@ -8,6 +8,9 @@
 #include <QProcess>
 #include <QStandardPaths>
 
+#include <sys/prctl.h>
+#include <sys/resource.h>
+
 namespace zion {
 
 void initApplication(QApplication &app, const QString &name, const QString &desktopFile)
@@ -21,6 +24,13 @@ void initApplication(QApplication &app, const QString &name, const QString &desk
         icon = QIcon(QStringLiteral("/usr/share/zionos/artwork/zionos-logo.svg"));
     QApplication::setWindowIcon(icon);
     I18n::install(&app);
+}
+
+void protectProcessMemory()
+{
+    prctl(PR_SET_DUMPABLE, 0, 0, 0, 0);
+    const struct rlimit none = {0, 0};
+    setrlimit(RLIMIT_CORE, &none);
 }
 
 bool programAvailable(const QString &program)

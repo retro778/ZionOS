@@ -15,6 +15,41 @@ def wait_desktop(vm, user, timeout=240):
                     what="plasmashell of %s" % user)
 
 
+def settings_keyboard_check(vm, rep, outdir, user):
+    """Change the layout-switching shortcut in ZionOS Settings (through the
+    GUI) and verify that the running session obeys it."""
+    bus = "export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u %s)/bus; " % user
+
+    def layout():
+        return vm.guest(bus + "qdbus6 org.kde.keyboard /Layouts getLayout", user=user)[1].strip()
+
+    vm.guest("pkill -u %s -f '[z]ionos-(welcome|settings|assistant)'; true" % user)
+    vm.key("alt", "f2"); time.sleep(3)
+    vm.type("zionos-settings --page keyboard"); time.sleep(2); vm.key("ret"); time.sleep(7)
+    ok = vm.click_text("Alt + Shift", timeout=20)          # the shortcut combo box
+    time.sleep(1)
+    for _ in range(3):                                     # -> "Caps Lock"
+        vm.key("down")
+    vm.key("ret"); time.sleep(1)
+    ok = vm.click_text("Apply", timeout=10) and ok
+    time.sleep(3)
+    vm.screenshot(os.path.join(outdir, "settings-keyboard.png"))
+    rc, out, _ = vm.guest("grep -E 'LayoutList|Options' /home/%s/.config/kxkbrc | tr '\\n' ' '" % user)
+    rep.check("settings: keyboard page saves layouts and the chosen shortcut",
+              ok and "LayoutList=us,il" in out and "grp:caps_toggle" in out, out)
+    before = layout()
+    vm.key("caps_lock"); time.sleep(1)
+    mid = layout()
+    vm.key("alt", "shift"); time.sleep(1)
+    after = layout()
+    rep.check("settings: new shortcut works immediately, old one no longer switches",
+              before == "0" and mid == "1" and after == "1", "%s -> %s -> %s" % (before, mid, after))
+    vm.key("caps_lock"); time.sleep(1)                     # back to the first layout
+    vm.guest("rm -f /home/%s/.config/kxkbrc; " % user + bus +
+             "dbus-send --session --type=signal /Layouts org.kde.keyboard.reloadConfig", user=user)
+    vm.guest("pkill -u %s -f '[z]ionos-settings'; true" % user)
+
+
 def run(vm, rep, outdir, user="zion", live=True):
     try:
         wait_desktop(vm, user)
@@ -110,6 +145,9 @@ def run(vm, rep, outdir, user="zion", live=True):
     time.sleep(3)
     vm.screenshot(os.path.join(outdir, "zionos-apps.png"))
     g("pkill -u %s -f '[z]ionos-settings'; pkill -u %s -f '[z]ionos-assistant'; true" % (user, user))
+
+    if live:
+        settings_keyboard_check(vm, rep, outdir, user)
 
     rc, out, _ = g("zionos-assistant --version; dpkg -s zionos-assistant | grep -E '^(Status|Version)'")
     rep.check("packaging: zionos-assistant installed from .deb", "install ok installed" in out, out.replace("\n", " "))

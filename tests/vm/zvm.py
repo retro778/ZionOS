@@ -234,13 +234,13 @@ class VM:
             time.sleep(interval)
         return False
 
-    def click_text(self, phrase, dx=0, dy=0, timeout=60, lang="eng", double=False):
+    def click_text(self, phrase, dx=0, dy=0, timeout=60, lang="eng", double=False, last=False):
         """Click on a visible label. Returns False if it never appears."""
         deadline = time.time() + timeout
         while time.time() < deadline:
             p = os.path.join(self.workdir, "_find.png")
             self.screenshot(p)
-            pos = find_text(p, phrase, lang)
+            pos = find_text(p, phrase, lang, last=last)
             if pos:
                 self.click(pos[0] + dx, pos[1] + dy, double=double)
                 return True
@@ -335,9 +335,9 @@ def ocr(image, lang="eng"):
     return r.stdout
 
 
-def find_text(image, phrase, lang="eng"):
-    """Locate a phrase on a screenshot. Returns the (x, y) centre of the first
-    word of the best match in screen pixels, or None."""
+def find_text(image, phrase, lang="eng", last=False):
+    """Locate a phrase on a screenshot. Returns the (x, y) centre of the
+    first (or, with last=True, the lowest) match in screen pixels, or None."""
     from PIL import Image
     scale = 2
     with Image.open(image) as im:
@@ -354,13 +354,16 @@ def find_text(image, phrase, lang="eng"):
             words.append((c[11].strip(), int(c[6]), int(c[7]), int(c[8]), int(c[9])))
     want = phrase.split()
     norm = lambda w: "".join(ch for ch in w.lower() if ch.isalnum())  # noqa: E731
+    found = []
     for i in range(len(words) - len(want) + 1):
         if all(norm(words[i + j][0]) == norm(want[j]) for j in range(len(want))):
-            first, last = words[i], words[i + len(want) - 1]
-            x0, y0 = first[1], first[2]
-            x1, y1 = last[1] + last[3], last[2] + last[4]
-            return ((x0 + x1) // 2 // scale, (y0 + y1) // 2 // scale)
-    return None
+            w0, w1 = words[i], words[i + len(want) - 1]
+            x0, y0 = w0[1], w0[2]
+            x1, y1 = w1[1] + w1[3], w1[2] + w1[4]
+            found.append(((x0 + x1) // 2 // scale, (y0 + y1) // 2 // scale))
+    if not found:
+        return None
+    return max(found, key=lambda p: p[1]) if last else found[0]
 
 
 def wait_for(fn, timeout, interval=3, what="condition"):

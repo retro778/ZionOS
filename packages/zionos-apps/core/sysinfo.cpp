@@ -71,7 +71,10 @@ QString SystemInfo::baseDistribution() const
 
 QString SystemInfo::kernel() const
 {
-    return QSysInfo::kernelType() + QLatin1Char(' ') + QSysInfo::kernelVersion();
+    QString type = QSysInfo::kernelType(); // "linux"
+    if (!type.isEmpty())
+        type[0] = type.at(0).toUpper();
+    return type + QLatin1Char(' ') + QSysInfo::kernelVersion();
 }
 
 QString SystemInfo::architecture() const

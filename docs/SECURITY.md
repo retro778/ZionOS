@@ -50,6 +50,10 @@ rules of our own. `zionos-assistant` refuses to start as root.
   repository. The key input field is cleared as soon as *Save* is pressed.
 * `Redactor` removes key-shaped strings, `Authorization`/`x-api-key` values
   and every key seen at runtime from all error text before it is displayed.
+* The assistant and the settings tool mark themselves non-dumpable
+  (`PR_SET_DUMPABLE=0`, core size 0): no core dump or crash report can
+  contain a key, and other processes of the same user cannot attach a
+  debugger to read it.
 * Keys are sent only as request headers to the provider's HTTPS endpoint.
   Redirects are refused, so a key cannot follow a redirect to another host.
 * Tests use obviously fake keys; no real key exists anywhere in the tree.
@@ -84,8 +88,10 @@ Model output, attached files and clipboard text are untrusted.
 
 ## Known limitations
 
-* The assistant holds the key in process memory while running; a process
-  running as the same user could read it (as with any desktop application).
+* The assistant holds the key in process memory while running. Debugger
+  attachment and core dumps are disabled, but malware already running as the
+  same user has other ways to interfere (for example by reading the keyring
+  once it is unlocked); that is outside what a desktop application can prevent.
 * History is stored unencrypted in the user's home directory (mode 0600).
   Use full-disk encryption (offered by the installer) if that matters, or
   disable history.

@@ -10,6 +10,7 @@
 
 int main(int argc, char **argv)
 {
+    zion::protectProcessMemory(); // API keys live in this process
     QApplication app(argc, argv);
     zion::initApplication(app, QStringLiteral("zionos-assistant"), QStringLiteral("zionos-assistant"));
     QCommandLineParser parser;

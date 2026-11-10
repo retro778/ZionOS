@@ -130,7 +130,7 @@ def run(iso, firmware, outdir):
                   "KDE Wallet" in text or "מחזיק המפתחות" in text, " ".join(text.split())[:200])
         vm.key("ret"); time.sleep(2)      # default button: use for this session only
         vm.key("esc"); time.sleep(2)      # close settings
-        rc, out, _ = g("grep -rl 'sk-ant-test' /home/zion /tmp --exclude=mock_provider.py 2>/dev/null | head -3")
+        rc, out, _ = g("grep -rlE 'sk-ant-[t]est' /home/zion /tmp /var/log --exclude=mock_provider.py 2>/dev/null | head -3")
         rep.check("keys: the session-only key is not written to disk", out.strip() == "", out)
 
         # 4. Send the Hebrew question for real (to the local stand-in).
@@ -168,13 +168,15 @@ def run(iso, firmware, outdir):
                   o[:1] == ["-rw-------"] and o[1:2] == ["1"] and o[2:3] == ["0"], out.replace("\n", " "))
 
         # 5. Copy the proposed command via the keyboard-accessible button.
-        ok = vm.click_text("sudo apt update", dx=-150, timeout=10)   # the "copy" button left of the code (RTL)
+        # The command card is the lowest occurrence of the command text; in a
+        # right-to-left window its copy button sits to the left of the code.
+        ok = vm.click_text("sudo apt update", dx=-150, timeout=10, last=True)
         time.sleep(2)
         clip = clipboard()
         rep.check("commands: copy button puts only the command on the clipboard (nothing was executed)",
                   clip == "sudo apt update", repr(clip))
         rc, out, _ = g("grep -c 'apt update' /var/log/apt/history.log 2>/dev/null || echo 0")
-        rep.check("commands: the proposed command was not run", out.strip() == "0", out)
+        rep.check("commands: the proposed command was not run", out.split()[:1] == ["0"], out)
 
         # --- installer language (nothing is installed here) --------------------
         g("pkill -u zion -f '[z]ionos-assistant'; true")

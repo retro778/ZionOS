@@ -116,8 +116,11 @@ def keyring_check(vm, rep, wd):
          "kwallet-query -r anthropic-api-key -f zionos-assistant kdewallet 2>&1 | head -1")
     rc, out, _ = vm.guest(q, user=USER)
     rep.check("keyring: API key saved from the UI is stored in KDE Wallet", out.strip() == FAKE_KEY, out[:120])
-    rc, out, _ = vm.guest("grep -rl '%s' /home/%s /tmp /var/log 2>/dev/null | head -3; "
-                          "pgrep -u %s -a kwalletd6 | grep -c pam-login" % (FAKE_KEY, USER, USER))
+    # The guest agent logs the commands it runs, so the search pattern is
+    # written so that it cannot match its own command line ("[v]m").
+    pattern = FAKE_KEY.replace("-vm-", "-[v]m-")
+    rc, out, _ = vm.guest("grep -rlE '%s' /home/%s /tmp /var/log /var/lib/systemd/coredump 2>/dev/null | head -3; "
+                          "pgrep -u %s -a kwalletd6 | grep -c pam-login" % (pattern, USER, USER))
     rep.check("keyring: no plaintext copy of the key on disk; wallet unlocked by login",
               out.strip() == "1", out.replace("\n", " | "))
     vm.guest("pkill -u %s -f '[z]ionos-assistant'; true" % USER)

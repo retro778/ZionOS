@@ -5,7 +5,7 @@
 #   QUICK=1          skip cppcheck
 set -eu
 SRC=/src/packages/zionos-apps
-B=/src/work/build-unit
+B="${ZIONOS_BUILD_DIR:-/src/work/build-unit}"
 mkdir -p "$B"
 cmake -S "$SRC" -B "$B" -G Ninja -DCMAKE_BUILD_TYPE=Debug -DZIONOS_SANITIZE=ON \
       -DZIONOS_WERROR=ON -DZIONOS_BUILD_GUI="${ZIONOS_GUI:-ON}" \

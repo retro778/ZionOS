@@ -126,7 +126,17 @@ AiSettingsWidget::AiSettingsWidget(CredentialStore *store, QList<ChatProvider *>
     outer->addStretch();
 
     connect(m_store, &CredentialStore::changed, this, &AiSettingsWidget::refreshStatus);
-    refreshAllStatuses(0);
+}
+
+void AiSettingsWidget::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    // The keyring is asked only once this page is actually looked at, so
+    // opening Settings on another page never raises a wallet prompt.
+    if (!m_statusRequested) {
+        m_statusRequested = true;
+        refreshAllStatuses(0);
+    }
 }
 
 void AiSettingsWidget::focusKeyField(const QString &providerId)
@@ -188,6 +198,7 @@ QWidget *AiSettingsWidget::buildProviderBox(ChatProvider *p)
 
     ui.status = new QLabel;
     ui.status->setObjectName(p->id() + QStringLiteral("Status"));
+    ui.status->setText(tr("Checking the keyring…"));
     lay->addRow(tr("API key:"), ui.status);
 
     auto *row = new QHBoxLayout;

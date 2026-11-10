@@ -46,7 +46,7 @@ case "$MODE" in
     all)
         ISO=$(default_iso)
         { echo "ZionOS test run $(date -u +%Y-%m-%dT%H:%M:%SZ)"; echo "ISO: $(basename "$ISO")  sha256=$(sha256sum "$ISO" | cut -d' ' -f1)";
-          echo "git: $(git -C /src rev-parse --short HEAD 2>/dev/null || echo n/a)  kvm: $([ -w /dev/kvm ] && echo yes || echo no)";
+          echo "git: $(git -c safe.directory=/src -C /src rev-parse --short HEAD 2>/dev/null || echo n/a)  kvm: $([ -w /dev/kvm ] && echo yes || echo no)";
           echo "qemu: $(qemu-system-x86_64 --version | head -1)"; echo; } > "$RES/SUMMARY.txt"
         run unit tests/unit.sh
         run live-bios    python3 tests/vm/test_live_boot.py "$ISO" --firmware bios --desktop --out "$RES"

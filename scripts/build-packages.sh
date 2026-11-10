@@ -14,7 +14,7 @@ fi
 OUT=/src/out/packages
 mkdir -p "$OUT"
 export DEB_BUILD_OPTIONS="${DEB_BUILD_OPTIONS:-parallel=$(nproc)}"
-: "${SOURCE_DATE_EPOCH:=$(git -C /src log -1 --format=%ct 2>/dev/null || date +%s)}"
+: "${SOURCE_DATE_EPOCH:=$(git -c safe.directory=/src -C /src log -1 --format=%ct 2>/dev/null || date +%s)}"
 export SOURCE_DATE_EPOCH
 
 for pkg in "$@"; do

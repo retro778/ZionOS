@@ -154,18 +154,30 @@ def main():
         g("rm -f /etc/apt/sources.list.d/zionos-test.sources /usr/share/keyrings/zionos-test-archive-keyring.gpg; "
           + apt + "update")
 
-        # The updated system still restarts.
+        # The updated system still restarts. Background package work (apt-daily,
+        # unattended-upgrades, PackageKit) legitimately delays a shutdown, so let
+        # it finish first and record how long that took.
+        import time
+        t0 = time.time()
+        try:
+            wait_for(lambda: g("pgrep -x 'apt-get|apt|dpkg|unattended-upgr|packagekitd' >/dev/null; "
+                               "systemctl is-active apt-daily.service apt-daily-upgrade.service | grep -c '^activ'")[1]
+                     .strip().endswith("0") and g("pgrep -x 'apt-get|dpkg' >/dev/null && echo busy || echo idle")[1]
+                     .strip() == "idle", 900, interval=10, what="package manager idle")
+        except Exception:  # noqa: BLE001
+            pass
+        print("package manager idle after %ds" % (time.time() - t0), flush=True)
         try:
             vm.guest("systemctl reboot", timeout=20)
         except Exception:  # noqa: BLE001
             pass
-        import time
         time.sleep(20)
         try:
-            vm.wait_agent(300)
+            vm.wait_agent(600)
             rc, out = g("systemctl is-system-running --wait; uname -r")
             rep.check("update: system restarts after the upgrade", "running" in out or "degraded" in out, out)
         except Exception as e:  # noqa: BLE001
+            vm.screenshot(os.path.join(wd, "restart-failure.png"))
             rep.check("update: system restarts after the upgrade", False, str(e))
         try:
             vm.guest("systemctl poweroff", timeout=20)

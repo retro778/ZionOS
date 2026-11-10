@@ -21,7 +21,7 @@ LB=/src/work/lb-$PROFILE
 mkdir -p "$LB"
 cd "$LB"
 [ -n "${ZIONOS_MIRROR:-}" ] || unset ZIONOS_MIRROR
-: "${SOURCE_DATE_EPOCH:=$(git -C /src log -1 --format=%ct 2>/dev/null || date +%s)}"
+: "${SOURCE_DATE_EPOCH:=$(git -c safe.directory=/src -C /src log -1 --format=%ct 2>/dev/null || date +%s)}"
 export SOURCE_DATE_EPOCH
 
 if [ -d .build ]; then
