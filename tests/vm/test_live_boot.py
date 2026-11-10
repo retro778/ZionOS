@@ -20,7 +20,7 @@ def run(iso, firmware, desktop, outdir):
             workdir=wd, audio=True) as vm:
         # Boot menu: capture it for the branding check, then let the default
         # entry start (Enter skips the timeout).
-        time.sleep(6 if firmware == "bios" else 10)
+        time.sleep(6 if firmware == "bios" else 12)
         shot = vm.screenshot(os.path.join(wd, "bootmenu.png"))
         text = ocr(shot)
         rep.check("boot menu shows ZionOS", "ZionOS" in text, text.replace("\n", " ")[:160])
@@ -37,7 +37,13 @@ def run(iso, firmware, desktop, outdir):
         rep.check("os-release identifies ZionOS on Debian trixie",
                   out.startswith("zionos/debian/trixie/ZionOS"), out)
         rc, out, _ = vm.guest("[ -d /sys/firmware/efi ] && echo uefi || echo bios")
-        rep.check("firmware mode is %s" % firmware, out.strip() == firmware, out)
+        rep.check("firmware mode is %s" % firmware, out.strip() == firmware.split("-")[0], out)
+        if firmware == "uefi-secureboot":
+            rc, out, _ = vm.guest("od -An -t u1 /sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c "
+                                  "| awk '{print $NF}'; mokutil --sb-state 2>&1 | head -1; "
+                                  "dmesg | grep -i -m2 'secure boot\\|lockdown'")
+            rep.check("Secure Boot is enforced and the Debian-signed boot chain is accepted",
+                      out.split()[:1] == ["1"], out.replace("\n", " | "))
         rc, out, _ = vm.guest("uname -r; dpkg --print-architecture")
         rep.check("kernel is Debian amd64", "amd64" in out, out.replace("\n", " "))
         rc, out, _ = vm.guest("grep -c boot=live /proc/cmdline; findmnt -no FSTYPE /")
@@ -71,7 +77,7 @@ def run(iso, firmware, desktop, outdir):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("iso")
-    ap.add_argument("--firmware", default="both")
+    ap.add_argument("--firmware", default="both", help="bios | uefi | uefi-secureboot | both")
     ap.add_argument("--desktop", action="store_true")
     ap.add_argument("--out", default="/src/out/test-results")
     a = ap.parse_args()

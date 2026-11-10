@@ -24,7 +24,7 @@ USER, PASSWORD, HOST = "tester", "ziontest2026", "zionvm"
 
 def install(iso, disk, firmware, wd, rep):
     with VM(name="zionos-install-" + firmware, iso=iso, disk=disk, firmware=firmware, workdir=wd) as vm:
-        time.sleep(6 if firmware == "bios" else 10)
+        time.sleep(6 if firmware == "bios" else 12)
         vm.key("ret")
         vm.wait_agent(420)
         desktop_checks.wait_desktop(vm, "zion")
@@ -142,7 +142,10 @@ def verify(disk, firmware, wd, rep, vars_file):
         o = out.split()
         rep.check("installed: ZionOS on its own ext4 root, not live",
                   o[0] == "zionos/debian/trixie" and "/dev/vda" in o[1] and o[2] == "ext4" and o[3] == "0"
-                  and o[4] == firmware, out.replace("\n", " "))
+                  and o[4] == firmware.split("-")[0], out.replace("\n", " "))
+        if firmware == "uefi-secureboot":
+            rc, out, _ = g("mokutil --sb-state 2>&1 | head -1; dmesg | grep -i -m1 'lockdown'")
+            rep.check("installed: boots with Secure Boot enforced", "SecureBoot enabled" in out, out.replace("\n", " | "))
         wait_for(lambda: g("systemctl is-system-running")[1].strip() in ("running", "degraded"), 180,
                  what="systemd startup")
         rc, out, _ = g("systemctl is-system-running; systemctl --failed --no-legend")
@@ -211,7 +214,7 @@ def verify(disk, firmware, wd, rep, vars_file):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("iso")
-    ap.add_argument("--firmware", default="uefi")
+    ap.add_argument("--firmware", default="uefi", help="bios | uefi | uefi-secureboot")
     ap.add_argument("--out", default="/src/out/test-results")
     ap.add_argument("--keep-disk", action="store_true")
     ap.add_argument("--verify-only", help="skip installation and verify this existing disk image")

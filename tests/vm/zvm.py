@@ -15,6 +15,10 @@ import time
 
 OVMF_CODE = "/usr/share/OVMF/OVMF_CODE_4M.fd"
 OVMF_VARS = "/usr/share/OVMF/OVMF_VARS_4M.fd"
+# Secure Boot: firmware that enforces it, with Microsoft's keys pre-enrolled
+# (the keys that sign Debian's shim).
+OVMF_CODE_SB = "/usr/share/OVMF/OVMF_CODE_4M.secboot.fd"
+OVMF_VARS_SB = "/usr/share/OVMF/OVMF_VARS_4M.ms.fd"
 
 
 class VMError(RuntimeError):
@@ -70,8 +74,9 @@ class VM:
                 os.unlink(p)
         kvm = os.access("/dev/kvm", os.R_OK | os.W_OK)
         self.kvm = kvm
+        secure = firmware == "uefi-secureboot"
         a = ["qemu-system-x86_64", "-name", name,
-             "-machine", "q35,accel=%s" % ("kvm" if kvm else "tcg"),
+             "-machine", "q35,accel=%s%s" % ("kvm" if kvm else "tcg", ",smm=on" if secure else ""),
              "-cpu", "host" if kvm else "max",
              "-m", str(mem), "-smp", str(cpus),
              "-display", "none", "-vga", "none", "-device", "virtio-vga",
@@ -87,11 +92,13 @@ class VM:
         if audio:
             a += ["-audiodev", "none,id=a0", "-device", "ich9-intel-hda",
                   "-device", "hda-duplex,audiodev=a0"]
-        if firmware == "uefi":
+        if firmware in ("uefi", "uefi-secureboot"):
             self.vars = vars_file or os.path.join(self.workdir, "OVMF_VARS.fd")
             if not os.path.exists(self.vars):
-                shutil.copy(OVMF_VARS, self.vars)
-            a += ["-drive", "if=pflash,format=raw,readonly=on,file=%s" % OVMF_CODE,
+                shutil.copy(OVMF_VARS_SB if secure else OVMF_VARS, self.vars)
+            if secure:
+                a += ["-global", "driver=cfi.pflash01,property=secure,value=on"]
+            a += ["-drive", "if=pflash,format=raw,readonly=on,file=%s" % (OVMF_CODE_SB if secure else OVMF_CODE),
                   "-drive", "if=pflash,format=raw,file=%s" % self.vars]
         if disk:
             a += ["-drive", "file=%s,if=none,id=hd0,format=qcow2,discard=unmap" % disk,

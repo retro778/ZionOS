@@ -1,9 +1,9 @@
 #!/bin/sh
 # Step 5: run tests (inside the builder container; /dev/kvm is passed through).
 # Usage: scripts/test.sh unit                        C++ unit tests (-Werror, ASan/UBSan), catalogue check, cppcheck
-#        scripts/test.sh live [bios|uefi|both] [ISO] [--desktop]
+#        scripts/test.sh live [bios|uefi|uefi-secureboot|both] [ISO] [--desktop]
 #        scripts/test.sh hebrew [bios|uefi] [ISO]    Hebrew typing, RTL UI, assistant conversation (mock provider)
-#        scripts/test.sh install [bios|uefi] [ISO]   install to a blank qcow2, boot it, log in, restart
+#        scripts/test.sh install [bios|uefi|uefi-secureboot] [ISO] install to a blank qcow2, boot it, log in, restart
 #        scripts/test.sh update [bios|uefi]          update the system installed by `install`
 #        scripts/test.sh all                         everything; summary in out/test-results/SUMMARY.txt
 set -eu
@@ -52,9 +52,12 @@ case "$MODE" in
         run live-bios    python3 tests/vm/test_live_boot.py "$ISO" --firmware bios --desktop --out "$RES"
         run live-uefi    python3 tests/vm/test_live_boot.py "$ISO" --firmware uefi --desktop --out "$RES"
         run hebrew-bios  python3 tests/vm/test_hebrew.py "$ISO" --firmware bios --out "$RES"
-        run install-uefi python3 tests/vm/test_install.py "$ISO" --firmware uefi --out "$RES" --keep-disk
-        run update-uefi  python3 tests/vm/test_update.py /src/work/install-uefi.qcow2 --firmware uefi \
-                             --vars "$RES/install-uefi/OVMF_VARS.fd" --out "$RES"
+        run live-uefi-secureboot python3 tests/vm/test_live_boot.py "$ISO" --firmware uefi-secureboot --out "$RES"
+        # Installation under UEFI with Secure Boot enforced (Microsoft keys,
+        # Debian-signed shim/GRUB/kernel), then updates on that system.
+        run install-uefi-secureboot python3 tests/vm/test_install.py "$ISO" --firmware uefi-secureboot --out "$RES" --keep-disk
+        run update-uefi-secureboot  python3 tests/vm/test_update.py /src/work/install-uefi-secureboot.qcow2 \
+                             --firmware uefi-secureboot --vars "$RES/install-uefi-secureboot/OVMF_VARS.fd" --out "$RES"
         run install-bios python3 tests/vm/test_install.py "$ISO" --firmware bios --out "$RES"
         echo; cat "$RES/SUMMARY.txt" ;;
     *) die "unknown mode $MODE" ;;
