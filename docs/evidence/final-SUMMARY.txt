@@ -1,0 +1,17 @@
+ZionOS test run 2026-11-10T22:42:59Z
+ISO: zionos-0.1.0-amd64.iso  sha256=e9c74f1fe01ea60967a13f2055cc5758bb650d5647a097cda9c1843851d45be5
+git: 37897b1  kvm: yes
+qemu: QEMU emulator version 10.0.13 (Debian 1:10.0.13+ds-0+deb13u1)
+
+PASS  unit
+PASS  live-bios
+PASS  live-uefi
+PASS  hebrew-bios
+PASS  live-uefi-secureboot
+FAIL  install-uefi-secureboot (exit 1)   [1st attempt: live desktop not up within 240 s; no installation attempted]
+FAIL  update-uefi-secureboot (exit 1)    [skipped in effect: no installed disk from the failed attempt]
+PASS  install-bios
+
+Re-run on the same ISO (2026-11-11), with failure diagnostics added to the test:
+PASS  install-uefi-secureboot (re-run)
+PASS  update-uefi-secureboot (re-run)

@@ -16,6 +16,17 @@
 5. **No independent security review; no native-speaker review of Hebrew.**
 6. **Recovery procedures are documented but mostly unexercised.**
 
+## Intermittent issues seen in testing (cause unknown)
+
+* **Live desktop slow or missing once.** In one of roughly ten live boots
+  under QEMU the Plasma desktop of the live user had not started 240 s
+  after boot (UEFI + Secure Boot). The immediate re-run on the same ISO
+  passed. No diagnostics were captured for the failing boot.
+* **Restart not detected once.** In one development run the installed
+  system did not answer the guest agent within 300 s after a reboot that
+  followed an upgrade; the same disk then rebooted normally three times.
+  It is not known whether the guest or the test harness was at fault.
+
 ## Functional gaps
 
 * **KDE Wallet in the live session.** The live user has no login password,

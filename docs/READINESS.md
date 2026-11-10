@@ -36,7 +36,31 @@ Blocking for a production label: 7, 8, 10 (real APIs), 12, 14, 15, 16.
 ## Automated test results
 
 <!-- RESULTS-BEGIN -->
-(filled in from out/test-results/SUMMARY.txt by the final run)
+Final run on the release-candidate image, 2026-11-10/11 (QEMU 10.0.13, KVM):
+
+```
+ZionOS test run 2026-11-10T22:42:59Z
+ISO: zionos-0.1.0-amd64.iso  sha256=e9c74f1fe01ea60967a13f2055cc5758bb650d5647a097cda9c1843851d45be5
+git: 37897b1  kvm: yes
+qemu: QEMU emulator version 10.0.13 (Debian 1:10.0.13+ds-0+deb13u1)
+```
+
+| Suite | Checks passed | Failed | Result |
+|---|---|---|---|
+| unit (5 Qt Test suites, ASan/UBSan, -Werror, cppcheck, catalogue) | 5 of 5 suites | 0 | pass |
+| live-bios | 35 | 0 | pass |
+| live-uefi | 35 | 0 | pass |
+| live-uefi-secureboot | 13 | 0 | pass |
+| hebrew-bios | 18 | 0 | pass |
+| install-uefi-secureboot | 48 | 0 | pass (second attempt, see note) |
+| update-uefi-secureboot | 13 | 0 | pass (after the install re-run) |
+| install-bios | 47 | 0 | pass |
+
+**Note on re-runs.** In the final suite run, `install-uefi-secureboot` aborted before installing anything: the live Plasma desktop did not appear within 240 s after boot (the same boot path passed in `live-uefi-secureboot` minutes earlier and in every other run). `update-uefi-secureboot` then had no disk to work on. Both were re-run on the same ISO and passed. The cause of the slow or missing desktop start was not determined (no screenshot was captured on the first attempt; the test now captures diagnostics). Treat it as an open intermittent issue.
+
+Earlier development runs also showed one unexplained failure of "system restarts after the upgrade" (the guest agent did not answer within 300 s after a reboot); the same disk rebooted correctly three times afterwards and the check has passed since.
+
+Raw logs and screenshots: `out/test-results/` (not committed); condensed copies: `docs/evidence/`.
 <!-- RESULTS-END -->
 
 What the suites cover:

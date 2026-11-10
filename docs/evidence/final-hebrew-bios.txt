@@ -1,0 +1,19 @@
+[PASS] boot menu: Hebrew entry selects he_IL -- ents quiet splash username=zion hostname=zionos-live findiso= locales=he_IL.UTF-8 keyboard-layouts=us,il keyboard-options=grp:alt_shift_toggle LANG=he_IL.UTF-8
+[PASS] Welcome window is shown in Hebrew -- ברוכים הבאים ‎ZionOS-7‏ x A v ברוכים הבאים ‎ZionOS-7‏ ‎ZionOS 0.1 (Aleph)‏ -- שולחן עבודה מבוסס ‎Debian‏ בעברית ובאנגלית
+[PASS] typing: Alt+Shift switches to Hebrew and back -- 'שלום עולם abc\n'
+[PASS] file names: Hebrew name typed in the terminal -- typed.txt שלום.txt
+[PASS] dialogs: ZionOS Settings is translated and laid out for Hebrew -- הגדרות 210025 x A v & שפה מקלדת 4 מערכת <> תוכנה 2 העוזר 9 על אודות פריסות מקלדת | אנגלית (ארה**ב) | עברית Alt + Shift החלפת פריסה באמצעות: החלה פר
+[PASS] assistant: window in Hebrew names the destination host -- טּ העוזר של ‎ZionOS‏ x Av ‎anw ]3‏ חדשה ‏ספק: ‎Anthropic (Claude)‏ | יי מודל? | שי ‎Claude Opus 5.5 (claude-opus-5-5) ‏= הגדרות ומפתחות 71 ‏שיחות שמורות ‏ה
+[PASS] assistant: without an API key nothing is transmitted -- 0
+[PASS] clipboard: select-all + copy of mixed Hebrew/English text -- 'איך מעדכנים apt?'
+[PASS] keys: unavailable keyring is explained, session-only offered -- העוזר של ‎ZionOS‏ x A > .2[ nv 7 שיחה חדשה | ספל 2 הגדרות העוזר הגדרות ומפתחות ‎API‏ שיחות שמורות העוזר ‎Nin‏ אופציונלי. ‎Nin‏ פועל רק לאחר הוספת מפת
+[PASS] keys: the session-only key is not written to disk
+[PASS] assistant: exactly one request with the typed Hebrew text -- {"msg": {"content": "איך מעדכנים apt?", "role": "user"}, "model": "claude-opus-5-5"}
+[PASS] assistant: streamed Hebrew reply and proposed command are displayed -- טּ העוזר של ‎ZionOS‏ x Av ‎anw ]3‏ חדשה ‏ספק: ‎Anthropic (Claude)‏ | יי מודל? | שי ‎Claude Opus 5.5 (claude-opus-5-5) ‏= הגדרות ומפתחות 71 ‏שי
+[PASS] assistant: HTML in the reply is shown as text, not interpreted -- אינו נשלח ברקע. ‏אפ ‎NW ‏לשאול‎ ‎1 ‎mw? Ctril+En ‎Gi ‎a‏ מחיקת השיחה שנבחרה ‏₪ צירוף קובץ... ‏3 צירוף טקסט מלוח הגזירים ‏₪8 סקירת מה שיישלח... ‏> ש
+[PASS] assistant: provider-reported token usage is shown -- laude)‏ (127.0.0.1). שום דבר אחר במחשב זה אינו משותף, ‏ודבר אינו נשלח ברקע. ‏אפ ‎NW ‏לשאול‎ ‎1 ‎mw? Ctril+En ‎Gi ‎a‏ מחיקת השיחה שנבחרה ‏₪ צירוף קובץ... ‏3 צירו
+[PASS] history: conversation saved locally (0600), without the key -- -rw------- 1 0
+[PASS] commands: copy button puts only the command on the clipboard (nothing was executed) -- 'sudo apt update'
+[PASS] commands: the proposed command was not run -- 0
+[PASS] installer: Calamares starts in Hebrew in a Hebrew session -- x A v אשף התקנת ‎ZionOS‏ 2( 4 Calamares ny ZionOS 0.1 ‏ברוך בואך להתקנת‎ ברוך בואך המחשב לא עומד בדרישות הסף להתקנת 0.1 ‎.ZionOS‏ 2 = ההתקנה לא יכולה לה
+== Hebrew live session (bios): 18 passed, 0 failed ==

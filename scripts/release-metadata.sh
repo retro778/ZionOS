@@ -34,7 +34,7 @@ cat > "$BASE.buildinfo.json" <<JSON
   "codename": "$ZIONOS_CODENAME",
   "architecture": "amd64",
   "base": {"distribution": "Debian", "suite": "$DEBIAN_SUITE",
-           "point_release": "$(grep -m1 '^base-files' "$BASE.packages" 2>/dev/null | awk '{print $2}')"},
+           "base_files_version": "$(grep -m1 '^base-files' "$BASE.packages" 2>/dev/null | awk '{print $2}')"},
   "iso": {"file": "$NAME", "bytes": $(stat -c %s "$NAME"),
           "sha256": "$(sha256sum "$NAME" | cut -d' ' -f1)"},
   "package_count": $( [ -f "$BASE.packages" ] && wc -l < "$BASE.packages" || echo null ),

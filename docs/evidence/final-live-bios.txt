@@ -1,0 +1,36 @@
+[PASS] boot menu shows ZionOS -- ZionOS  Zion0S Live  (English)  Zion0S Live  (Hebrew)  Zion0S Live  (safe graphics)  Utilities...  The  li  er  y will be executed automatically in 5s.  enter
+[PASS] live system reached guest agent
+[PASS] os-release identifies ZionOS on Debian trixie -- zionos/debian/trixie/ZionOS 0.1 (Aleph)
+[PASS] firmware mode is bios -- bios
+[PASS] kernel is Debian amd64 -- 6.12.116+deb13-amd64 amd64
+[PASS] running as live system (overlay root) -- 1 overlay
+[PASS] no failed systemd units -- running |
+[PASS] networking: DNS resolves deb.debian.org -- 2a04:4e42:7d::644 debian.map.fastlydns.net deb.debian.org
+[PASS] networking: HTTPS to Debian mirror -- HTTP/2 200
+[PASS] APT sources are Debian trixie only -- release v=13.7,o=Debian,a=stable,n=trixie,l=Debian,c=contrib,b=amd64 |      release v=13.7,o=Debian,a=stable,n=trixie,l=Debian,c=main,b=amd64 |      release v=13.7,o=Debian,a=
+[PASS] live user 'zion' exists -- uid=1000(zion) gid=1000(zion) groups=1000(zion),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),100(users),101(netdev),102(scanner),107(bluetooth) |     (ALL) NOPAS
+[PASS] desktop: Plasma session running for zion
+[PASS] desktop: ZionOS Welcome shown at first login -- Welcome to ZionOS  vA xX  Welcome to ZionOS  ZionOS 0.1 (Aleph) — a Debian-based desktop in English and Hebrew.  Languag
+[PASS] desktop: sddm and NetworkManager active -- active
+[PASS] desktop: panel/compositor/audio services running -- plasmashell
+[PASS] audio: PipeWire has an output sink -- ├─ Sinks:  │  *   55. Built-in Audio Analog Stereo        [vol: 0.40]  │    ├─ Sources:  ├─ Sinks:
+[PASS] audio: a sound plays through PipeWire without error -- played
+[PASS] display: resolution can be changed (1280x800 -> 1920x1080) -- (1920, 1080) kscreen.doctor: Output 1 set mode "1920x1080@60" Virtual-1
+[PASS] desktop: expected applications installed
+[PASS] desktop: ZionOS launcher entries -- 4
+[PASS] i18n: en_US and he_IL locales generated -- en_US.utf8 he_IL.utf8 Aharoni CLM;David CLM;DejaVu Sans;DejaVu Sans,DejaVu Sans
+[PASS] i18n: Hebrew fonts available -- s Hebrew,Noto Sans Hebrew Cond Med;Noto Sans Hebrew,Noto Sans Hebrew Cond SemBd;Noto Sans Hebrew,Noto Sans Hebrew Cond Thin;Noto Sans Hebrew,Noto Sans Hebrew ExtBd;Noto Sans Hebrew,
+[PASS] i18n: us+il layouts with Alt+Shift by default -- LayoutList=us,il Options=grp:alt_shift_toggle ResetOldOptions=true
+[PASS] apps: LibreOffice, Firefox ESR and Kate report versions -- LibreOffice 25.2.3.2 520(Build:2)  Mozilla Firefox 153.6.0esr kate 25.04.3 kate.time: QApplication initialized in 20 ms QThreadStorage: Thread 0x555727c5f
+[PASS] apps: LibreOffice converts a Hebrew-named document -- קובץ עברי.pdf
+[PASS] dev: C and C++ programs compile and run -- ZionOS C++ שלום
+[PASS] cli: core terminal utilities work -- b
+[PASS] apps: zionos-settings starts -- up
+[PASS] apps: zionos-assistant starts -- up
+[PASS] settings: keyboard page saves layouts and the chosen shortcut -- LayoutList=us,il Options=grp:caps_toggle ResetOldOptions=true
+[PASS] settings: new shortcut works immediately, old one no longer switches -- 0 -> 1 -> 1
+[PASS] packaging: zionos-assistant installed from .deb -- Status: install ok installed Version: 0.1.0
+[PASS] optional AI: removing the assistant removes nothing else -- Remv zionos-assistant [0.1.0];
+[PASS] installer: Calamares present with ZionOS branding -- 1
+[PASS] clean shutdown
+== live boot (bios): 35 passed, 0 failed ==

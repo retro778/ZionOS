@@ -1,0 +1,14 @@
+[PASS] boot menu shows ZionOS -- Z  Zionos  ZionOS Live (English)  ZionOS Live (Hebrew)  ZionOS Live (safe graphics)  Utilities...  The highl  ted entry will be  yted automatically in 1s.  ente
+[PASS] live system reached guest agent
+[PASS] os-release identifies ZionOS on Debian trixie -- zionos/debian/trixie/ZionOS 0.1 (Aleph)
+[PASS] firmware mode is uefi-secureboot -- uefi
+[PASS] Secure Boot is enforced and the Debian-signed boot chain is accepted -- 1 | SecureBoot enabled | [    0.000000] Kernel is locked down from EFI Secure Boot; see man kernel_lockdown.7 | [    0.000000] secureboot: Se
+[PASS] kernel is Debian amd64 -- 6.12.116+deb13-amd64 amd64
+[PASS] running as live system (overlay root) -- 1 overlay
+[PASS] no failed systemd units -- running |
+[PASS] networking: DNS resolves deb.debian.org -- 2a04:4e42:7d::644 debian.map.fastlydns.net deb.debian.org
+[PASS] networking: HTTPS to Debian mirror -- HTTP/2 200
+[PASS] APT sources are Debian trixie only -- release v=13.7,o=Debian,a=stable,n=trixie,l=Debian,c=contrib,b=amd64 |      release v=13.7,o=Debian,a=stable,n=trixie,l=Debian,c=main,b=amd64 |      release v=13.7,o=Debian,a=
+[PASS] live user 'zion' exists -- uid=1000(zion) gid=1000(zion) groups=1000(zion),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),100(users),101(netdev),102(scanner),107(bluetooth) |     (ALL) NOPAS
+[PASS] clean shutdown
+== live boot (uefi-secureboot): 13 passed, 0 failed ==

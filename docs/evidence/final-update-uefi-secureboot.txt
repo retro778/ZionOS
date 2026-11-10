@@ -1,0 +1,14 @@
+[PASS] update: signed test repository built with zionos-base 0.1.1~test1
+[PASS] update: installed zionos-base is older than the test update -- 0.1.0
+[PASS] update: apt-get update against Debian archives -- Hit:1 http://deb.debian.org/debian trixie InRelease
+[PASS] update: Debian dist-upgrade completes -- Reading package lists...
+[PASS] update: no half-configured packages afterwards -- 0
+[PASS] update: signed ZionOS repository is accepted -- tp://deb.debian.org/debian trixie InRelease
+[PASS] update: newer ZionOS package is the upgrade candidate -- Installed: 0.1.0
+[PASS] update: ZionOS packages upgraded through APT -- 0.1.1~test1 install ok installed0.1.1~test1 install ok installed | ut will be used to detect bootable binaries on them and create new boot entries.
+[PASS] update: identity and diversion intact after upgrade -- zionos 0.1 ../usr/lib/os-release 1 0
+[PASS] update: tampered repository index is rejected -- 75f17ff75f8b203e0097ba6eaf4e58931b756
+[PASS] update: repository signed by an untrusted key is rejected -- GP signature verification failed: http://10.0.2.2:8099 ./ InRelease: Sub-process /usr/bin/sqv returned an error code (1), error message is: Missing key 
+[PASS] update: unsigned repository is rejected -- InRelease
+[PASS] update: system restarts after the upgrade -- running
+== update installed system (uefi-secureboot): 13 passed, 0 failed ==

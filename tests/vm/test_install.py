@@ -27,7 +27,15 @@ def install(iso, disk, firmware, wd, rep):
         time.sleep(6 if firmware == "bios" else 12)
         vm.key("ret")
         vm.wait_agent(420)
-        desktop_checks.wait_desktop(vm, "zion")
+        try:
+            desktop_checks.wait_desktop(vm, "zion", 420)
+        except Exception as e:  # noqa: BLE001
+            vm.screenshot(os.path.join(wd, "live-desktop-failure.png"))
+            rc, out, _ = vm.guest("systemctl is-active sddm; loginctl list-sessions --no-legend; "
+                                  "journalctl -b -u sddm --no-pager | tail -15; cat /proc/cmdline")
+            print(out, flush=True)
+            rep.check("install: live desktop is up", False, str(e))
+            return False
         rep.check("install: live desktop is up", True)
         rc, out, _ = vm.guest("lsblk -dno NAME,SIZE,TYPE | grep disk")
         rep.check("install: exactly one blank target disk (vda)", out.split()[:1] == ["vda"], out)

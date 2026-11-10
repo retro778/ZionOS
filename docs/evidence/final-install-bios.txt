@@ -1,0 +1,49 @@
+[PASS] install: live desktop is up
+[PASS] install: exactly one blank target disk (vda) -- vda     24G disk
+[PASS] install: installer starts from the Welcome window
+[PASS] install: Calamares welcome page with ZionOS branding
+[PASS] install: location page
+[PASS] install: keyboard page
+[PASS] install: partition page names the target disk -- ZionOS Installer  vA xX  <>} BIOS  Select storage device: | &) vda - 24.00 GiB (/dev/vda) ~  Zz  Erase disk  ail  21  This will delete all data currently presen
+[PASS] install: users page
+[PASS] install: summary identifies the disk to be erased -- ZionOS Installer vA xX This is an overview of what will happen once you start the install procedure. Zz Location Set timezone to America/New York. Welcome The s
+[PASS] install: explicit confirmation before writing
+[PASS] install: installer reports completion -- after 184s: ZionOS Installer vA xX Zz ail Welcome Location Keyboard Partitions All done. Users ZionOS 0.1 has been installed on your computer. Summary You may now restart i
+installation took 185 s
+[PASS] install: target disk partitioned -- vda           24G;└─vda1 ext4   24G;
+[PASS] installed: boots from disk without the ISO
+[PASS] installed: ZionOS on its own ext4 root, not live -- zionos/debian/trixie /dev/vda1 ext4 0 bios
+[PASS] installed: no failed systemd units -- running |
+[PASS] installed: live and installer packages removed -- 0
+[PASS] installed: only the user created in the installer; root locked; hostname set -- 1000 | tester cdrom floppy sudo audio dip video plugdev netdev scanner bluetooth lpadmin | 0 | L | zionvm |
+[PASS] installed: no autologin, no passwordless sudo -- 0
+[PASS] installed: APT uses Debian trixie + security, no CD-ROM -- deb http://deb.debian.org/debian trixie-backports main non-free-firmware | deb http://deb.debian.org/debian trixie main non-free-firmware | deb http://deb
+[PASS] updates: apt-get update succeeds and an upgrade can be computed -- Get:10 http://deb.debian.org/debian trixie-backports/non-free-firmware Translation-en [4,824 B] | Fetched 946 kB in 1s (715 kB/s) | Reading packag
+[PASS] packages: installing a Debian package with APT works -- Setting up sl (5.02-1+b1) ...
+[PASS] installed: GRUB menu entries are branded ZionOS -- 4
+[PASS] installed: graphical login with the installed user's password
+[PASS] desktop: Plasma session running for tester
+[PASS] desktop: ZionOS Welcome shown at first login -- Welcome to ZionOS  vA xX  Welcome to ZionOS  ZionOS 0.1 (Aleph) — a Debian-based desktop in English and Hebrew  Language
+[PASS] desktop: sddm and NetworkManager active -- active
+[PASS] desktop: panel/compositor/audio services running -- plasmashell
+[PASS] audio: PipeWire has an output sink -- ├─ Sinks:  │  *   52. Built-in Audio Analog Stereo        [vol: 0.40]  │    ├─ Sources:  ├─ Sinks:
+[PASS] audio: a sound plays through PipeWire without error -- played
+[PASS] display: resolution can be changed (1280x800 -> 1920x1080) -- (1920, 1080) kscreen.doctor: Output 1 set mode "1920x1080@60" Virtual-1
+[PASS] desktop: expected applications installed
+[PASS] desktop: ZionOS launcher entries -- 4
+[PASS] i18n: en_US and he_IL locales generated -- en_US.utf8 he_IL.utf8 Aharoni CLM;David CLM;DejaVu Sans;DejaVu Sans,DejaVu Sans
+[PASS] i18n: Hebrew fonts available -- s Hebrew,Noto Sans Hebrew Cond Med;Noto Sans Hebrew,Noto Sans Hebrew Cond SemBd;Noto Sans Hebrew,Noto Sans Hebrew Cond Thin;Noto Sans Hebrew,Noto Sans Hebrew ExtBd;Noto Sans Hebrew,
+[PASS] i18n: us+il layouts with Alt+Shift by default -- LayoutList=us,il Options=grp:alt_shift_toggle ResetOldOptions=true
+[PASS] apps: LibreOffice, Firefox ESR and Kate report versions -- LibreOffice 25.2.3.2 520(Build:2)  Mozilla Firefox 153.6.0esr kate 25.04.3 kate.time: QApplication initialized in 6 ms QThreadStorage: Thread 0x5569a12a64
+[PASS] apps: LibreOffice converts a Hebrew-named document -- קובץ עברי.pdf
+[PASS] dev: C and C++ programs compile and run -- ZionOS C++ שלום
+[PASS] cli: core terminal utilities work -- b
+[PASS] apps: zionos-settings starts -- up
+[PASS] apps: zionos-assistant starts -- up
+[PASS] packaging: zionos-assistant installed from .deb -- Status: install ok installed Version: 0.1.0
+[PASS] optional AI: removing the assistant removes nothing else -- Remv zionos-assistant [0.1.0];
+[PASS] keyring: API key saved from the UI is stored in KDE Wallet -- sk-ant-test-vm-0000000000000000
+[PASS] keyring: no plaintext copy of the key on disk; wallet unlocked by login -- 1 |
+[PASS] installed: restart returns to the installed system -- 2026-11-10 18:09:52 /dev/vda1
+[PASS] installed: clean shutdown
+== install + first boot (bios): 47 passed, 0 failed ==
