@@ -146,6 +146,21 @@ def run(vm, rep, outdir, user="zion", live=True):
     vm.screenshot(os.path.join(outdir, "zionos-apps.png"))
     g("pkill -u %s -f '[z]ionos-settings'; pkill -u %s -f '[z]ionos-assistant'; true" % (user, user))
 
+    # The ZionOS update channel: configured, reachable, signature accepted by
+    # APT, and restricted to zionos-* packages.
+    rc, out, err = g("apt-get update 2>&1 | grep -E 'freedomnet|^(E|W|Err):' ; echo rc=$?; "
+                     "cat /etc/apt/sources.list.d/zionos.sources | grep -E 'URIs|Signed-By' | tr '\\n' ' '", timeout=300)
+    rep.check("updates: ZionOS repository is configured with Signed-By and passes apt-get update",
+              "freedomnet.tech/zionos" in out and "Signed-By: /usr/share/keyrings/zionos-archive-keyring.asc" in out
+              and "Err:" not in out and "E:" not in out and "W:" not in out, out.replace("\n", " | ")[:300])
+    rc, out, _ = g("apt-cache policy zionos-base | grep -B1 -A1 freedomnet | tr '\\n' ' '; echo; "
+                   "apt-cache policy | grep -A2 'freedomnet.tech/zionos' | grep -E 'release|origin' | tr '\\n' ' '; echo; "
+                   "apt-cache policy bash | grep -c freedomnet")
+    lines = out.split("\n")
+    rep.check("updates: ZionOS packages are served by the signed repository (o=ZionOS), pinned to zionos-* only",
+              "500 https://freedomnet.tech/zionos" in lines[0] and "o=ZionOS" in out and lines[2].strip() == "0",
+              out.replace("\n", " | ")[:300])
+
     if live:
         settings_keyboard_check(vm, rep, outdir, user)
 
