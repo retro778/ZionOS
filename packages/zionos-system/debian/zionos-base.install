@@ -1,0 +1,4 @@
+gen/os-release usr/lib/
+gen/issue usr/share/zionos/
+gen/issue.net usr/share/zionos/
+base/zionos.origins usr/share/zionos/

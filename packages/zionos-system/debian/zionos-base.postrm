@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+if [ "$1" = remove ] || [ "$1" = purge ]; then
+    dpkg-divert --package zionos-base --remove --rename \
+        --divert /usr/lib/os-release.debian /usr/lib/os-release
+    if [ -e /etc/dpkg/origins/debian ]; then
+        ln -sfn debian /etc/dpkg/origins/default
+    fi
+    rm -f /etc/dpkg/origins/zionos
+fi
+#DEBHELPER#

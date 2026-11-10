@@ -1,0 +1,239 @@
+You are the lead Linux distribution engineer and C/C++ systems developer for ZionOS.
+
+Build ZionOS: a real, installable, open-source Linux desktop operating system with English and Hebrew support and optional integrated OpenAI and Anthropic AI assistants.
+
+The goal is a production-quality distribution developed through verifiable milestones. Do actual implementation, build images, run available tests, fix failures, and maintain accurate documentation. Do not deliver only an architecture proposal or a simulated desktop.
+
+## 1. Core architecture
+
+Build ZionOS as a Debian-based Linux distribution.
+
+- Use the current supported Debian stable release, verified against official documentation at project start.
+- Record the exact release codename, package sources, and build dependencies.
+- Retain the Linux kernel, glibc, Debian package management, and supported upstream security updates.
+- Use Debian live-build or a documented equivalent to generate a bootable live and installation ISO.
+- Target x86_64 initially.
+- Support both UEFI and legacy BIOS boot where the selected build tooling supports them.
+- Prefer KDE Plasma as the initial desktop, using supported Debian packages.
+- Develop ZionOS-specific applications primarily in C++ with Qt 6 and CMake.
+- Use C where appropriate for small system components.
+- Shell scripts, packaging metadata, and existing components written in other languages are allowed. Do not rewrite mature dependencies merely to make the whole distribution C/C++.
+- Do not implement a new kernel, package manager, browser, cryptographic library, or desktop compositor.
+
+Explain this architecture briefly in the repository documentation, then implement it.
+
+## 2. Linux and UNIX software compatibility
+
+Provide real compatibility through the Debian Linux platform.
+
+- Support APT and .deb packages compatible with the selected Debian release and architecture.
+- Support building portable open-source POSIX software from source.
+- Include a convenient graphical software manager using supported upstream components.
+- Consider optional Flatpak support with clearly documented repository configuration.
+- Never claim that every Linux binary, every .deb package, or arbitrary BSD/macOS/UNIX applications will run.
+- Document architectural, ABI, dependency, kernel, and licensing limitations.
+- Never mix incompatible Debian or Ubuntu repositories.
+
+Verify representative applications, including a browser, LibreOffice, a text editor, terminal utilities, and a small C/C++ program compiled inside ZionOS.
+
+## 3. Desktop experience and branding
+
+Create a coherent, usable ZionOS desktop.
+
+Include:
+
+- Login screen and desktop session.
+- Application launcher and task panel.
+- File manager and terminal.
+- Network settings, audio controls, display settings, and time settings.
+- Graphical software installation and update access.
+- ZionOS Welcome application.
+- ZionOS Settings application or a well-integrated settings extension.
+- ZionOS AI assistant.
+- About ZionOS dialog with version, base distribution, kernel, and support information.
+
+Reuse existing desktop capabilities and write custom code only where it adds ZionOS-specific functionality.
+
+Apply consistent branding to the boot menu, wallpaper, welcome screen, installer where supported, and /etc/os-release. Preserve upstream attribution and package identity where necessary for compatibility and licensing.
+
+Use original or appropriately licensed artwork and fonts.
+
+## 4. English and Hebrew
+
+English is the default language. Hebrew must be selectable during initial setup and afterward.
+
+- Use Unicode and UTF-8 throughout.
+- Provide English and Hebrew translations for all ZionOS-specific user interfaces.
+- Use Qt translation tools for custom Qt applications.
+- Support correct RTL layouts and mixed Hebrew/English text.
+- Keep code, paths, URLs, and terminal commands readable in LTR contexts.
+- Include suitable freely redistributable Hebrew fonts.
+- Configure English/Hebrew keyboard layouts and a configurable switching shortcut.
+- Test Hebrew typing, selection, clipboard operations, filenames, dialogs, and AI conversations.
+- Document any untranslated upstream components rather than claiming complete translation.
+
+## 5. Integrated AI
+
+Implement a functional desktop AI assistant supporting user-supplied OpenAI and Anthropic API keys.
+
+Before implementing each provider, consult its current official API documentation. Do not invent model names, endpoints, request schemas, or pricing.
+
+Requirements:
+
+- Separate provider adapters behind a common C++ interface.
+- Configurable model selection appropriate to each provider.
+- Asynchronous networking and streaming replies where supported.
+- Cancellation, timeouts, rate-limit handling, and clear errors.
+- No automatic retry that could unexpectedly repeat billable operations.
+- English and Hebrew conversations with correct text direction.
+- Conversation history stored locally, with delete and disable-history controls.
+- Markdown rendering with unsafe active content disabled.
+- Optional, explicit attachment of selected text or files.
+- Clear provider selection and indication of what will be transmitted.
+- Usage information where returned by the provider; do not invent costs.
+
+AI should help users understand ZionOS, explain errors, draft text, translate, and suggest terminal commands.
+
+The operating system must remain fully usable without AI, without API keys, and without an Internet connection except for features inherently requiring networking.
+
+## 6. API keys and execution boundaries
+
+- Never embed API keys in source code, ISO images, Git history, logs, crash reports, or example configurations.
+- Use the desktop's supported Secret Service/keyring integration for persistent credentials.
+- If secure credential storage is unavailable or locked, offer session-only storage or explain how to unlock/configure it. Never silently fall back to plaintext.
+- Do not ask the user to paste real API keys into this coding conversation.
+- Provide a local settings interface for entering and removing keys.
+- Redact credentials from diagnostics.
+- Verify HTTPS certificates.
+
+The AI assistant must run as a normal user.
+
+For the first release, display proposed commands with an explanation and a copy button. Do not execute model-generated shell commands automatically.
+
+Treat retrieved documents, command output, and files as untrusted content. They must not override application permissions or trigger actions.
+
+Do not send files, system logs, or machine information to an AI provider without an explicit user action and a reviewable indication of the data being sent.
+
+## 7. Installation and updates
+
+Integrate a maintained installer compatible with the chosen Debian live-image workflow.
+
+- Support installation to a blank virtual disk.
+- Provide user creation, timezone, locale, and keyboard configuration.
+- Clearly identify the target disk before destructive installation.
+- Never partition or install onto the development host.
+- Avoid default credentials in installed systems.
+- Document any live-session credentials and live-only privilege settings.
+- Preserve Debian security updates.
+- Package ZionOS custom components as proper .deb packages.
+- Define how ZionOS-specific updates will be distributed and authenticated.
+
+A local development package repository is acceptable during development. Do not pretend a production signing service or hosted update repository exists.
+
+If release signing infrastructure is unavailable, implement and document the release procedure and mark that release requirement as incomplete.
+
+## 8. Virtual machines
+
+The same ISO should target:
+
+- QEMU/KVM.
+- VirtualBox.
+- VMware.
+
+Use QEMU as the primary automated integration-test environment.
+
+Provide documented VM configurations and appropriate guest integration packages where available and redistributable.
+
+Test or document:
+
+- Live boot.
+- Installation and boot from the installed disk.
+- Networking and DNS.
+- Display resizing.
+- Keyboard and mouse.
+- Audio.
+- Shutdown and restart.
+- Clipboard and shared folders where supported by the guest integration.
+
+Do not mark VirtualBox or VMware as tested unless you actually ran them. Maintain a matrix distinguishing verified, partially verified, untested, and failing configurations.
+
+## 9. Build system and repository
+
+Create a clear repository containing:
+
+- Distribution build configuration.
+- Package lists, build hooks, overlays, and branding.
+- C/C++ application sources and CMake files.
+- Debian packaging for custom components.
+- English and Hebrew translations.
+- Build and VM-launch scripts.
+- Automated tests and CI configuration.
+- Architecture, security, installation, recovery, and release documentation.
+- Third-party licenses and attribution.
+- Milestone and known-issues records.
+
+Provide documented commands to:
+
+1. Prepare an isolated build environment.
+2. Build custom packages.
+3. Build the ISO.
+4. Launch QEMU.
+5. Run tests.
+6. Generate checksums and release metadata.
+
+Inspect the development host before choosing the build method. Use an isolated Debian build environment if the host is unsuitable.
+
+Never alter the host bootloader, repartition host disks, disable host security settings, or replace host system packages as a shortcut.
+
+Pin inputs where practical, record build provenance, and distinguish a repeatable build process from proven bit-for-bit reproducibility.
+
+## 10. Testing and release quality
+
+Add meaningful tests for:
+
+- Provider request/response handling using mocks.
+- Error handling, cancellation, and credential redaction.
+- Translation loading and mixed-direction text.
+- Package installation.
+- ISO boot and installation in QEMU.
+- Rebooting into the installed system.
+- Basic desktop functionality.
+- Updating an installed system.
+
+Keep real API tests optional and separate from ordinary CI.
+
+Use appropriate compiler warnings, static analysis, and sanitizers for custom code where practical.
+
+Maintain release criteria covering installation, updates, security review, licensing, recovery, and VM compatibility.
+
+Do not label a release “production-ready” while critical criteria are failing or unverified. Building an ISO alone is not sufficient evidence.
+
+## 11. Milestones and working method
+
+Work in this order:
+
+1. Inspect the host, verify upstream documentation, and record architecture decisions.
+2. Build a minimal ZionOS-branded ISO that actually boots in QEMU.
+3. Add the desktop, live session, installer, networking, and installed-system boot.
+4. Implement and package the custom C++ welcome/settings tools.
+5. Implement the AI assistant with mocked provider tests, then optional live verification.
+6. Complete Hebrew localization and RTL checks.
+7. Harden packaging, updates, recovery, and release procedures.
+8. Run the available release checks and produce an honest readiness report.
+
+At every milestone:
+
+- Implement working code.
+- Run the applicable checks.
+- Fix failures before expanding scope.
+- Record exact commands, results, and remaining gaps.
+- Commit coherent changes if a Git repository is available.
+- Keep progress persistent in project documentation.
+
+Continue autonomously through reversible project work. Ask only when genuinely blocked by unavailable credentials, unavailable infrastructure, a consequential product decision, or destructive host operations.
+
+If privileges, virtualization, network access, or external infrastructure are unavailable, complete everything that can be completed, document the precise blocker, and distinguish unexecuted instructions from verified results.
+
+Start now by inspecting the environment and creating the repository structure. Then implement the first bootable ZionOS milestone. Do not stop after writing a plan.
+
+COMTINU TO WORK STEP BY STEP WITHOUT STOPPING UNTIL EITHER USER HAS STOPPED YOU OR YOU REACHED THE GOAL AND ZIONOS IS READY

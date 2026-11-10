@@ -1,0 +1,12 @@
+/work/
+/out/
+/build-*/
+*.iso
+*.qcow2
+*.deb
+*.buildinfo
+*.changes
+*.qm
+__pycache__/
+.cache/
+CMakeUserPresets.json

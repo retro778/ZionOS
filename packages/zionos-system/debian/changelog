@@ -1,0 +1,5 @@
+zionos-system (0.1.0) trixie; urgency=medium
+
+  * Initial ZionOS base, artwork and system integration packages.
+
+ -- ZionOS Developers <zionos-devel@localhost>  Tue, 10 Nov 2026 21:10:02 +0200

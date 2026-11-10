@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+if [ "$1" = configure ]; then
+    # /etc/issue and /etc/issue.net are base-files conffiles. Replace them only
+    # while they still carry Debian's (or a previous ZionOS) default text, so
+    # administrator edits are never overwritten.
+    for f in issue issue.net; do
+        if [ ! -e /etc/$f ] || grep -qE '^(Debian GNU/Linux|ZionOS) ' /etc/$f; then
+            cp /usr/share/zionos/$f /etc/$f
+        fi
+    done
+    # /etc/os-release is normally a symlink to /usr/lib/os-release. Some image
+    # builders replace it with a copy of Debian's file; restore the link then.
+    if [ ! -L /etc/os-release ] && { [ ! -e /etc/os-release ] || grep -q '^ID=debian$' /etc/os-release; }; then
+        ln -sfn ../usr/lib/os-release /etc/os-release
+    fi
+    mkdir -p /etc/dpkg/origins
+    cp /usr/share/zionos/zionos.origins /etc/dpkg/origins/zionos
+    ln -sfn zionos /etc/dpkg/origins/default
+fi
+#DEBHELPER#

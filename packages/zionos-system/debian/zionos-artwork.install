@@ -1,0 +1,7 @@
+gen/zionos-wallpaper-1920x1080.png usr/share/wallpapers/ZionOS/contents/images/
+gen/zionos-wallpaper-3840x2160.png usr/share/wallpapers/ZionOS/contents/images/
+artwork/metadata.json usr/share/wallpapers/ZionOS/
+gen/zionos-boot.png usr/share/zionos/artwork/
+artwork/zionos-logo.svg usr/share/zionos/artwork/
+artwork/zionos-logo.svg usr/share/icons/hicolor/scalable/apps/
+artwork/zionos-logo.svg usr/share/pixmaps/

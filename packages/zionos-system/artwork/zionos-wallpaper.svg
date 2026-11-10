@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ZionOS default wallpaper "Aleph Dawn". Original artwork. License: CC-BY-SA-4.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1f44"/>
+      <stop offset="0.55" stop-color="#16498f"/>
+      <stop offset="1" stop-color="#1fa3c4"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.78" cy="0.82" r="0.6">
+      <stop offset="0" stop-color="#ffd27a" stop-opacity="0.55"/>
+      <stop offset="0.35" stop-color="#ff9e6b" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#ff9e6b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="3840" height="2160" fill="url(#sky)"/>
+  <rect width="3840" height="2160" fill="url(#sun)"/>
+  <path d="M0 1500 L700 1120 L1300 1420 L2000 980 L2700 1380 L3300 1100 L3840 1360 V2160 H0z" fill="#0a1a3a" fill-opacity="0.35"/>
+  <path d="M0 1740 L900 1380 L1700 1700 L2500 1300 L3200 1640 L3840 1460 V2160 H0z" fill="#081530" fill-opacity="0.45"/>
+  <path d="M0 1960 L1100 1680 L2100 1940 L3000 1700 L3840 1860 V2160 H0z" fill="#060f24" fill-opacity="0.6"/>
+  <g transform="translate(1792 880)" fill="#ffffff" fill-opacity="0.10">
+    <path d="M72 72h112v24l-74 64h74v24H72v-24l74-64H72z"/>
+  </g>
+</svg>

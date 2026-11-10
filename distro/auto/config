@@ -1,0 +1,44 @@
+#!/bin/sh
+# live-build configuration for ZionOS. Invoked by `lb config`.
+# Environment (set by scripts/build-iso.sh):
+#   ZIONOS_VERSION   e.g. 0.1.0
+#   ZIONOS_MIRROR    Debian mirror used at build time
+set -e
+
+: "${ZIONOS_VERSION:=0.0.0}"
+: "${ZIONOS_MIRROR:=http://deb.debian.org/debian/}"
+: "${ZIONOS_SECURITY_MIRROR:=http://security.debian.org/debian-security/}"
+
+lb config noauto \
+    --mode debian \
+    --distribution trixie \
+    --architectures amd64 \
+    --archive-areas "main contrib non-free-firmware" \
+    --parent-mirror-bootstrap "$ZIONOS_MIRROR" \
+    --parent-mirror-chroot-security "$ZIONOS_SECURITY_MIRROR" \
+    --parent-mirror-binary "http://deb.debian.org/debian/" \
+    --parent-mirror-binary-security "http://security.debian.org/debian-security/" \
+    --mirror-bootstrap "$ZIONOS_MIRROR" \
+    --mirror-chroot-security "$ZIONOS_SECURITY_MIRROR" \
+    --mirror-binary "http://deb.debian.org/debian/" \
+    --mirror-binary-security "http://security.debian.org/debian-security/" \
+    --security true \
+    --updates true \
+    --backports false \
+    --binary-images iso-hybrid \
+    --bootloaders "grub-pc,grub-efi" \
+    --debian-installer none \
+    --apt-recommends true \
+    --firmware-chroot true \
+    --firmware-binary false \
+    --memtest none \
+    --linux-flavours amd64 \
+    --bootappend-live "boot=live components quiet splash username=zion hostname=zionos-live" \
+    --iso-application "ZionOS" \
+    --iso-publisher "ZionOS Developers" \
+    --iso-preparer "live-build" \
+    --iso-volume "ZionOS ${ZIONOS_VERSION}" \
+    --image-name "zionos-${ZIONOS_VERSION}" \
+    --cache true \
+    --cache-packages true \
+    "${@}"

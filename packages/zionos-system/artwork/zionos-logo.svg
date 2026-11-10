@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ZionOS logo. Original artwork for the ZionOS project. License: CC-BY-SA-4.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b4f9c"/>
+      <stop offset="1" stop-color="#27b7d9"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="224" height="224" rx="52" fill="url(#g)"/>
+  <path d="M72 72h112v24l-74 64h74v24H72v-24l74-64H72z" fill="#ffffff"/>
+</svg>

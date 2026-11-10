@@ -1,0 +1,19 @@
+# Minimal bootable ZionOS (milestone 2): live system + identification.
+live-boot
+live-config
+live-config-systemd
+systemd-sysv
+sudo
+locales
+console-setup
+keyboard-configuration
+iproute2
+iputils-ping
+network-manager
+ca-certificates
+curl
+less
+nano
+qemu-guest-agent
+zionos-base
+zionos-artwork

@@ -1,0 +1,22 @@
+Source: zionos-system
+Section: misc
+Priority: optional
+Maintainer: ZionOS Developers <zionos-devel@localhost>
+Build-Depends: debhelper-compat (= 13), librsvg2-bin, fonts-dejavu-core
+Standards-Version: 4.7.2
+Rules-Requires-Root: no
+
+Package: zionos-base
+Architecture: all
+Depends: ${misc:Depends}
+Description: ZionOS release identification
+ Provides /etc/os-release, login banners and dpkg vendor information
+ identifying the system as ZionOS, a Debian-based distribution. The original
+ Debian files are preserved through dpkg diversions.
+
+Package: zionos-artwork
+Architecture: all
+Depends: ${misc:Depends}
+Description: ZionOS logos, wallpapers and boot artwork
+ Original ZionOS artwork: logo icons, the default desktop wallpaper and the
+ boot menu background.

@@ -1,0 +1,9 @@
+#!/bin/sh
+# live-build rewrites /etc/os-release as a regular file (adding build
+# metadata) after packages are installed. Point it back at the ZionOS file
+# provided by zionos-base so the image identifies itself correctly.
+set -e
+if [ -e /usr/lib/os-release.debian ]; then
+    ln -sfn ../usr/lib/os-release /etc/os-release
+fi
+grep -q '^ID=zionos$' /etc/os-release

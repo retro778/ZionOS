@@ -1,0 +1,8 @@
+{
+    "KPlugin": {
+        "Authors": [ { "Name": "ZionOS Developers" } ],
+        "Id": "ZionOS",
+        "License": "CC-BY-SA-4.0",
+        "Name": "ZionOS Aleph Dawn"
+    }
+}
