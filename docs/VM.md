@@ -64,5 +64,30 @@ result recorded in `docs/READINESS.md`; **partial** = some aspects executed;
 **untested** = never run; **failing** = run and failed.
 
 <!-- MATRIX-BEGIN -->
-(filled in by the release readiness pass)
+| Capability | QEMU/KVM BIOS | QEMU/KVM UEFI | QEMU/KVM UEFI + Secure Boot | VirtualBox | VMware |
+|---|---|---|---|---|---|
+| Live boot | verified | verified | verified | untested | untested |
+| Installation to blank disk | verified | partial (1) | verified | untested | untested |
+| Boot from installed disk | verified | partial (1) | verified | untested | untested |
+| Networking and DNS (NAT) | verified | verified | verified | untested | untested |
+| Keyboard and mouse (USB tablet) | verified | verified | verified | untested | untested |
+| Audio (device present, playback call succeeds; not listened to) | partial (2) | partial (2) | partial (2) | untested | untested |
+| Display: change resolution in guest | verified | verified | verified | untested | untested |
+| Display: automatic resize with host window | untested (3) | untested (3) | untested (3) | untested | untested |
+| Shutdown and restart | verified | verified | verified | untested | untested |
+| Host clipboard sharing | untested (3) | untested (3) | untested (3) | untested (4) | untested |
+| Shared folders | untested | untested | untested | untested (4) | untested |
+| Updating the installed system | untested | partial (1) | verified | untested | untested |
+
+1. Plain UEFI installation, boot and update passed in earlier development
+   runs of the same test; the final suite runs the stricter Secure Boot
+   variant instead.
+2. QEMU runs with a null audio back-end in the tests: the guest sees a sound
+   card, PipeWire exposes a sink and `pw-play` completes without error, but
+   no audible output was checked.
+3. Needs a SPICE display with `spice-vdagent` (installed in the guest). Not
+   exercised by the headless tests.
+4. Needs VirtualBox Guest Additions, which Debian 13 does not package.
+
+No configuration is known to be **failing**.
 <!-- MATRIX-END -->

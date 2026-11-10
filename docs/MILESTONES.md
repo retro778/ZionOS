@@ -31,9 +31,61 @@ Problems found and fixed on the way:
   the `zionos-base` diversion → chroot hook `9000-zionos-identity` and a
   guard in the package's postinst restore the symlink.
 
-## M3 — Desktop, live session, installer, installed-system boot — open
-## M4 — Welcome / Settings applications packaged — open
-## M5 — AI assistant with mocked provider tests — open
-## M6 — Hebrew localisation and RTL checks — open
-## M7 — Packaging, updates, recovery, release procedure — open
-## M8 — Release checks and readiness report — open
+## M3 — Desktop, live session, installer, networking, installed boot — done (2026-11-10)
+
+KDE Plasma 6.3 (Wayland) from Debian, SDDM, Discover, Firefox ESR,
+LibreOffice; Calamares with ZionOS branding and an extra confirmation
+before writing; `zionos-desktop-settings` (us+il layouts, locales,
+wallpaper, login background, GRUB menu). Verified by `scripts/test.sh live`
+and `scripts/test.sh install` on BIOS, UEFI and UEFI with Secure Boot.
+
+Problems found and fixed: wrong package names in the first list
+(`plasma-workspace-wayland`, `kwallet-pam`, `spectacle`); debug-symbol
+packages leaking into the image; KDE's own welcome centre replaced by
+ZionOS Welcome; live session lacked the Alt+Shift option for the console.
+
+## M4 — Welcome / Settings applications, packaged — done (2026-11-10)
+
+`zionos-welcome`, `zionos-settings` (language, keyboard layouts and switch
+shortcut, shortcuts into KDE System Settings, software/Flatpak, assistant,
+About) as `.deb` packages from `packages/zionos-apps`. C++20, Qt 6, CMake,
+`-Werror`, tests run in the package build. Keyboard-shortcut change verified
+live through the GUI.
+
+## M5 — AI assistant with mocked provider tests — done; live verification open
+
+Anthropic Messages API and OpenAI Responses API adapters behind
+`ChatProvider`, written against the official references consulted on
+2026-11-10 (`docs/AI-PROVIDERS.md`). Streaming, cancel, idle timeout, error
+mapping, no retries, usage display, local history with delete/disable,
+sanitised Markdown, command cards with copy only, explicit attachments with
+review, KDE Wallet storage with session-only fallback. Verified with mocks
+(`tst_providers`, `tst_chat`), end to end in a VM against a local stand-in
+provider, and with the real KDE Wallet on an installed system.
+
+**Open:** no request has been sent to the real provider APIs (no keys
+available to the development session).
+
+## M6 — Hebrew localisation and RTL — done for ZionOS components
+
+195-string Hebrew catalogue, RTL layouts, isolates and direction marks for
+mixed text, per-paragraph direction in replies. Verified by unit tests and
+`scripts/test.sh hebrew` (real key events). Found and fixed: Hebrew
+sentences starting with a Latin name were laid out left-to-right.
+**Open:** native-speaker review; upstream translation gaps are documented,
+not fixed.
+
+## M7 — Packaging, updates, recovery, release procedure — partly done
+
+Done: all ZionOS components are `.deb` packages; local APT repository;
+update path tested with a signed test repository including rejection of
+tampered/unsigned repositories; release metadata script; recovery and
+release procedures documented; key-holding processes hardened against core
+dumps. **Open:** production signing key and hosted repository (release
+requirement marked incomplete in `docs/RELEASE.md`); recovery procedures
+largely unexercised.
+
+## M8 — Release checks and readiness report — done
+
+`scripts/test.sh all` and `docs/READINESS.md`. Verdict: development
+preview, not production-ready; blocking items are listed there.
