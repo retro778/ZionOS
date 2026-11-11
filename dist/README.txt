@@ -5,6 +5,7 @@ Files in this folder
   zionos-0.1.0-amd64.iso     live + installation image (BIOS and UEFI)
   install-zionos-qemu.sh     create a virtual disk and start the installer
   run-zionos-qemu.sh         start the installed system (or --live)
+  paste-into-zionos.sh       type the host clipboard into the running VM
   SHA256SUMS                 checksum of the ISO (unsigned development build)
 
 Install
@@ -17,6 +18,16 @@ Install
 Run
   ./run-zionos-qemu.sh          the installed system
   ./run-zionos-qemu.sh --live   the live session without installing
+
+Pasting from the host (API keys, long commands)
+  The VM window does not share the host clipboard. To get text from the host
+  into ZionOS:
+    1. copy the text on the host (Ctrl+C);
+    2. click into the field inside ZionOS (keyboard layout "us");
+    3. on the host run   ./paste-into-zionos.sh
+  It types the clipboard contents into the VM as keystrokes. Nothing is saved
+  to a file. Use  --ask  to type the text at a hidden prompt instead of using
+  the clipboard, and  --enter  to press Enter afterwards. ASCII text only.
 
 Details
   Virtual disk   zionos-disk.qcow2, 40 GB maximum, grows on demand

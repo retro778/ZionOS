@@ -8,6 +8,7 @@ DISK_SIZE="${ZIONOS_DISK_SIZE:-40G}"
 MEM="${ZIONOS_MEM:-4096}"          # MiB
 CPUS="${ZIONOS_CPUS:-4}"
 VARS="$HERE/zionos-uefi-vars.fd"
+QMP_SOCK="$HERE/.zionos-qmp.sock"   # control socket used by ./paste-into-zionos.sh
 OVMF_CODE=/usr/share/OVMF/OVMF_CODE_4M.fd
 OVMF_VARS=/usr/share/OVMF/OVMF_VARS_4M.fd
 
@@ -34,5 +35,6 @@ base_args() {
 -device virtio-vga -device qemu-xhci -device usb-tablet \
 -netdev user,id=n0 -device virtio-net-pci,netdev=n0 \
 -device ich9-intel-hda -device hda-duplex -device virtio-rng-pci \
+-qmp unix:$QMP_SOCK,server=on,wait=off \
 ${ZIONOS_QEMU_DISPLAY:--display gtk,zoom-to-fit=off}"
 }
