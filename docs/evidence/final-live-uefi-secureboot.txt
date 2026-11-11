@@ -8,7 +8,7 @@
 [PASS] no failed systemd units -- running |
 [PASS] networking: DNS resolves deb.debian.org -- 2a04:4e42:7d::644 debian.map.fastlydns.net deb.debian.org
 [PASS] networking: HTTPS to Debian mirror -- HTTP/2 200
-[PASS] APT sources are Debian trixie only -- release v=13.7,o=Debian,a=stable,n=trixie,l=Debian,c=contrib,b=amd64 |      release v=13.7,o=Debian,a=stable,n=trixie,l=Debian,c=main,b=amd64 |      release v=13.7,o=Debian,a=
+[PASS] APT sources are Debian trixie only -- release o=ZionOS,a=aleph,n=aleph,l=ZionOS,c=main,b=amd64 |      release v=13.7,o=Debian,a=stable,n=trixie,l=Debian,c=contrib,b=amd64 |      release v=13.7,o=Debian,a=stable,n=
 [PASS] live user 'zion' exists -- uid=1000(zion) gid=1000(zion) groups=1000(zion),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),100(users),101(netdev),102(scanner),107(bluetooth) |     (ALL) NOPAS
 [PASS] clean shutdown
 == live boot (uefi-secureboot): 13 passed, 0 failed ==

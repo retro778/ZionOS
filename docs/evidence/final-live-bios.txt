@@ -7,7 +7,7 @@
 [PASS] no failed systemd units -- running |
 [PASS] networking: DNS resolves deb.debian.org -- 2a04:4e42:7d::644 debian.map.fastlydns.net deb.debian.org
 [PASS] networking: HTTPS to Debian mirror -- HTTP/2 200
-[PASS] APT sources are Debian trixie only -- release v=13.7,o=Debian,a=stable,n=trixie,l=Debian,c=contrib,b=amd64 |      release v=13.7,o=Debian,a=stable,n=trixie,l=Debian,c=main,b=amd64 |      release v=13.7,o=Debian,a=
+[PASS] APT sources are Debian trixie only -- release o=ZionOS,a=aleph,n=aleph,l=ZionOS,c=main,b=amd64 |      release v=13.7,o=Debian,a=stable,n=trixie,l=Debian,c=contrib,b=amd64 |      release v=13.7,o=Debian,a=stable,n=
 [PASS] live user 'zion' exists -- uid=1000(zion) gid=1000(zion) groups=1000(zion),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),100(users),101(netdev),102(scanner),107(bluetooth) |     (ALL) NOPAS
 [PASS] desktop: Plasma session running for zion
 [PASS] desktop: ZionOS Welcome shown at first login -- Welcome to ZionOS  vA xX  Welcome to ZionOS  ZionOS 0.1 (Aleph) — a Debian-based desktop in English and Hebrew.  Languag
@@ -21,16 +21,18 @@
 [PASS] i18n: en_US and he_IL locales generated -- en_US.utf8 he_IL.utf8 Aharoni CLM;David CLM;DejaVu Sans;DejaVu Sans,DejaVu Sans
 [PASS] i18n: Hebrew fonts available -- s Hebrew,Noto Sans Hebrew Cond Med;Noto Sans Hebrew,Noto Sans Hebrew Cond SemBd;Noto Sans Hebrew,Noto Sans Hebrew Cond Thin;Noto Sans Hebrew,Noto Sans Hebrew ExtBd;Noto Sans Hebrew,
 [PASS] i18n: us+il layouts with Alt+Shift by default -- LayoutList=us,il Options=grp:alt_shift_toggle ResetOldOptions=true
-[PASS] apps: LibreOffice, Firefox ESR and Kate report versions -- LibreOffice 25.2.3.2 520(Build:2)  Mozilla Firefox 153.6.0esr kate 25.04.3 kate.time: QApplication initialized in 20 ms QThreadStorage: Thread 0x555727c5f
+[PASS] apps: LibreOffice, Firefox ESR and Kate report versions -- LibreOffice 25.2.3.2 520(Build:2)  Mozilla Firefox 153.6.0esr kate 25.04.3 kate.time: QApplication initialized in 18 ms QThreadStorage: Thread 0x55d7fc212
 [PASS] apps: LibreOffice converts a Hebrew-named document -- קובץ עברי.pdf
 [PASS] dev: C and C++ programs compile and run -- ZionOS C++ שלום
 [PASS] cli: core terminal utilities work -- b
 [PASS] apps: zionos-settings starts -- up
 [PASS] apps: zionos-assistant starts -- up
+[PASS] updates: ZionOS repository is configured with Signed-By and passes apt-get update -- Hit:4 https://freedomnet.tech/zionos aleph InRelease | rc=0 | URIs: https://freedomnet.tech/zionos Signed-By: /usr/share/keyring
+[PASS] updates: ZionOS packages are served by the signed repository (o=ZionOS), pinned to zionos-* only -- *** 0.1.0 500          -1 https://freedomnet.tech/zionos aleph/main amd64 Packages         100 /var/lib/dpkg/stat
 [PASS] settings: keyboard page saves layouts and the chosen shortcut -- LayoutList=us,il Options=grp:caps_toggle ResetOldOptions=true
 [PASS] settings: new shortcut works immediately, old one no longer switches -- 0 -> 1 -> 1
 [PASS] packaging: zionos-assistant installed from .deb -- Status: install ok installed Version: 0.1.0
 [PASS] optional AI: removing the assistant removes nothing else -- Remv zionos-assistant [0.1.0];
 [PASS] installer: Calamares present with ZionOS branding -- 1
 [PASS] clean shutdown
-== live boot (bios): 35 passed, 0 failed ==
+== live boot (bios): 37 passed, 0 failed ==

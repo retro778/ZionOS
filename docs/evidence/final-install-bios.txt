@@ -18,7 +18,7 @@ installation took 185 s
 [PASS] installed: only the user created in the installer; root locked; hostname set -- 1000 | tester cdrom floppy sudo audio dip video plugdev netdev scanner bluetooth lpadmin | 0 | L | zionvm |
 [PASS] installed: no autologin, no passwordless sudo -- 0
 [PASS] installed: APT uses Debian trixie + security, no CD-ROM -- deb http://deb.debian.org/debian trixie-backports main non-free-firmware | deb http://deb.debian.org/debian trixie main non-free-firmware | deb http://deb
-[PASS] updates: apt-get update succeeds and an upgrade can be computed -- Get:10 http://deb.debian.org/debian trixie-backports/non-free-firmware Translation-en [4,824 B] | Fetched 946 kB in 1s (715 kB/s) | Reading packag
+[PASS] updates: apt-get update succeeds and an upgrade can be computed -- Get:11 http://deb.debian.org/debian trixie-backports/non-free-firmware Translation-en [4,824 B] | Fetched 946 kB in 1s (725 kB/s) | Reading packag
 [PASS] packages: installing a Debian package with APT works -- Setting up sl (5.02-1+b1) ...
 [PASS] installed: GRUB menu entries are branded ZionOS -- 4
 [PASS] installed: graphical login with the installed user's password
@@ -34,16 +34,18 @@ installation took 185 s
 [PASS] i18n: en_US and he_IL locales generated -- en_US.utf8 he_IL.utf8 Aharoni CLM;David CLM;DejaVu Sans;DejaVu Sans,DejaVu Sans
 [PASS] i18n: Hebrew fonts available -- s Hebrew,Noto Sans Hebrew Cond Med;Noto Sans Hebrew,Noto Sans Hebrew Cond SemBd;Noto Sans Hebrew,Noto Sans Hebrew Cond Thin;Noto Sans Hebrew,Noto Sans Hebrew ExtBd;Noto Sans Hebrew,
 [PASS] i18n: us+il layouts with Alt+Shift by default -- LayoutList=us,il Options=grp:alt_shift_toggle ResetOldOptions=true
-[PASS] apps: LibreOffice, Firefox ESR and Kate report versions -- LibreOffice 25.2.3.2 520(Build:2)  Mozilla Firefox 153.6.0esr kate 25.04.3 kate.time: QApplication initialized in 6 ms QThreadStorage: Thread 0x5569a12a64
+[PASS] apps: LibreOffice, Firefox ESR and Kate report versions -- LibreOffice 25.2.3.2 520(Build:2)  Mozilla Firefox 153.6.0esr kate 25.04.3 kate.time: QApplication initialized in 7 ms QThreadStorage: Thread 0x55a4577de4
 [PASS] apps: LibreOffice converts a Hebrew-named document -- קובץ עברי.pdf
 [PASS] dev: C and C++ programs compile and run -- ZionOS C++ שלום
 [PASS] cli: core terminal utilities work -- b
 [PASS] apps: zionos-settings starts -- up
 [PASS] apps: zionos-assistant starts -- up
+[PASS] updates: ZionOS repository is configured with Signed-By and passes apt-get update -- Hit:3 https://freedomnet.tech/zionos aleph InRelease | rc=0 | URIs: https://freedomnet.tech/zionos Signed-By: /usr/share/keyring
+[PASS] updates: ZionOS packages are served by the signed repository (o=ZionOS), pinned to zionos-* only -- *** 0.1.0 500          -1 https://freedomnet.tech/zionos aleph/main amd64 Packages         100 /var/lib/dpkg/stat
 [PASS] packaging: zionos-assistant installed from .deb -- Status: install ok installed Version: 0.1.0
 [PASS] optional AI: removing the assistant removes nothing else -- Remv zionos-assistant [0.1.0];
 [PASS] keyring: API key saved from the UI is stored in KDE Wallet -- sk-ant-test-vm-0000000000000000
 [PASS] keyring: no plaintext copy of the key on disk; wallet unlocked by login -- 1 |
-[PASS] installed: restart returns to the installed system -- 2026-11-10 18:09:52 /dev/vda1
+[PASS] installed: restart returns to the installed system -- 2026-11-10 19:31:20 /dev/vda1
 [PASS] installed: clean shutdown
-== install + first boot (bios): 47 passed, 0 failed ==
+== install + first boot (bios): 49 passed, 0 failed ==

@@ -1,17 +1,16 @@
-ZionOS test run 2026-11-10T22:42:59Z
-ISO: zionos-0.1.0-amd64.iso  sha256=e9c74f1fe01ea60967a13f2055cc5758bb650d5647a097cda9c1843851d45be5
-git: 37897b1  kvm: yes
+ZionOS test run 2026-11-11T00:02:45Z
+ISO: zionos-0.1.0-amd64.iso  sha256=085a1369662310aafc5743c07cab74637d010e7a23aff3403a67c59e4143d8e1
+git: 8544a73  kvm: yes
 qemu: QEMU emulator version 10.0.13 (Debian 1:10.0.13+ds-0+deb13u1)
 
 PASS  unit
-PASS  live-bios
+FAIL  live-bios (exit 1)   [test bug: misparsed `apt-cache policy` output; all product checks passed]
 PASS  live-uefi
 PASS  hebrew-bios
 PASS  live-uefi-secureboot
-FAIL  install-uefi-secureboot (exit 1)   [1st attempt: live desktop not up within 240 s; no installation attempted]
-FAIL  update-uefi-secureboot (exit 1)    [skipped in effect: no installed disk from the failed attempt]
+PASS  install-uefi-secureboot
+PASS  update-uefi-secureboot
 PASS  install-bios
 
-Re-run on the same ISO (2026-11-11), with failure diagnostics added to the test:
-PASS  install-uefi-secureboot (re-run)
-PASS  update-uefi-secureboot (re-run)
+Re-run on the same ISO with the corrected check:
+PASS  live-bios (re-run)

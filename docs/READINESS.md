@@ -18,8 +18,8 @@ is not, by itself, evidence of production quality.
 | 4 | Installation to a blank disk; target disk identified and confirmed before writing; no default credentials | **met (QEMU)** | `install-bios`, `install-uefi-secureboot` |
 | 5 | Installed system boots, graphical login, restart, shutdown | **met (QEMU)** | same suites |
 | 6 | Debian security updates preserved and working | **met** | `update-uefi-secureboot` (dist-upgrade), APT source checks |
-| 7 | ZionOS packages delivered as `.deb`; authenticated update mechanism | **partly met** | mechanism verified with a test key; **no production repository or key** |
-| 8 | Signed release artefacts | **not met** | no signing infrastructure; checksums are generated unsigned |
+| 7 | ZionOS packages delivered as `.deb`; authenticated update mechanism | **met, with caveats** | signed repository at `https://freedomnet.tech/zionos`, verified from live and installed systems; software key held by one person, single server (`docs/RELEASE.md`) |
+| 8 | Signed release artefacts | **met, with caveats** | `SHA256SUMS.asc` signed with the archive key; key is not hardware-backed |
 | 9 | English and Hebrew: selectable at setup and later; typing, RTL, mixed text | **met for ZionOS components (QEMU)** | `hebrew-bios`, unit tests; upstream gaps in `docs/LOCALIZATION.md`; no native-speaker review |
 | 10 | AI assistant: both providers, streaming, cancel, errors, no retries, key handling | **met against mocks; not verified against the real APIs** | `tst_providers`, `tst_chat`, `hebrew-bios`, keyring check in install suites |
 | 11 | OS fully usable without AI, keys or the assistant package | **met** | all suites run without keys; "removing the assistant removes nothing else" |
@@ -31,34 +31,36 @@ is not, by itself, evidence of production quality.
 | 17 | Reproducible build | **repeatable, not bit-for-bit reproducible** | `docs/BUILD.md` |
 | 18 | CI | **defined, never executed on a CI service** | `.github/workflows/ci.yml` |
 
-Blocking for a production label: 7, 8, 10 (real APIs), 12, 14, 15, 16.
+Blocking for a production label: 10 (real APIs), 12, 14, 15, 16; 7 and 8 need a hardware-backed key and a second maintainer to be considered robust.
 
 ## Automated test results
 
 <!-- RESULTS-BEGIN -->
-Final run on the release-candidate image, 2026-11-10/11 (QEMU 10.0.13, KVM):
+Final run on the published image, 2026-11-11 (QEMU 10.0.13, KVM):
 
 ```
-ZionOS test run 2026-11-10T22:42:59Z
-ISO: zionos-0.1.0-amd64.iso  sha256=e9c74f1fe01ea60967a13f2055cc5758bb650d5647a097cda9c1843851d45be5
-git: 37897b1  kvm: yes
+ZionOS test run 2026-11-11T00:02:45Z
+ISO: zionos-0.1.0-amd64.iso  sha256=085a1369662310aafc5743c07cab74637d010e7a23aff3403a67c59e4143d8e1
+git: 8544a73  kvm: yes
 qemu: QEMU emulator version 10.0.13 (Debian 1:10.0.13+ds-0+deb13u1)
 ```
 
 | Suite | Checks passed | Failed | Result |
 |---|---|---|---|
 | unit (5 Qt Test suites, ASan/UBSan, -Werror, cppcheck, catalogue) | 5 of 5 suites | 0 | pass |
-| live-bios | 35 | 0 | pass |
-| live-uefi | 35 | 0 | pass |
+| live-bios | 37 | 0 | pass (re-run, see note) |
+| live-uefi | 37 | 0 | pass |
 | live-uefi-secureboot | 13 | 0 | pass |
 | hebrew-bios | 18 | 0 | pass |
-| install-uefi-secureboot | 48 | 0 | pass (second attempt, see note) |
-| update-uefi-secureboot | 13 | 0 | pass (after the install re-run) |
-| install-bios | 47 | 0 | pass |
+| install-uefi-secureboot | 50 | 0 | pass |
+| update-uefi-secureboot | 13 | 0 | pass |
+| install-bios | 49 | 0 | pass |
 
-**Note on re-runs.** In the final suite run, `install-uefi-secureboot` aborted before installing anything: the live Plasma desktop did not appear within 240 s after boot (the same boot path passed in `live-uefi-secureboot` minutes earlier and in every other run). `update-uefi-secureboot` then had no disk to work on. Both were re-run on the same ISO and passed. The cause of the slow or missing desktop start was not determined (no screenshot was captured on the first attempt; the test now captures diagnostics). Treat it as an open intermittent issue.
+**Note on the re-run.** `live-bios` first reported one failure caused by the test itself (it misread `apt-cache policy` output for the new update-channel check). The check was corrected and the suite re-run on the same ISO: 37/37. The later suites in the same run already used the corrected check.
 
-Earlier development runs also showed one unexplained failure of "system restarts after the upgrade" (the guest agent did not answer within 300 s after a reboot); the same disk rebooted correctly three times afterwards and the check has passed since.
+**Intermittent failures seen in earlier runs** (not reproduced in this run): once the live desktop had not started 240 s after boot under UEFI Secure Boot; once the guest agent did not answer within 300 s after a post-upgrade reboot. Causes unknown; see `docs/KNOWN-ISSUES.md`.
+
+The live and installed systems in these runs fetched and verified the real ZionOS repository at `https://freedomnet.tech/zionos`.
 
 Raw logs and screenshots: `out/test-results/` (not committed); condensed copies: `docs/evidence/`.
 <!-- RESULTS-END -->
@@ -117,8 +119,8 @@ What the suites cover:
 
 ## Recommended next steps
 
-1. Create the archive signing key and a hosted repository; ship
-   `zionos-archive-keyring` and sign ISO checksums.
+1. Move the archive key to a hardware token with an offline primary key;
+   add `Valid-Until` and a second mirror; deliver a first real update (0.1.1).
 2. Run `tst_live_api` with real keys for both providers.
 3. Test on VirtualBox, VMware and at least two physical machines.
 4. Native-speaker review of the Hebrew catalogue; Hebrew installation run.
