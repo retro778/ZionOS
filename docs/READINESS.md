@@ -29,7 +29,7 @@ is not, by itself, evidence of production quality.
 | 15 | VM compatibility: QEMU, VirtualBox, VMware | **QEMU verified; VirtualBox and VMware untested** | `docs/VM.md` |
 | 16 | Physical hardware | **untested** | — |
 | 17 | Reproducible build | **repeatable, not bit-for-bit reproducible** | `docs/BUILD.md` |
-| 18 | CI | **defined, never executed on a CI service** | `.github/workflows/ci.yml` |
+| 18 | CI | **partly met** | unit + minimal-ISO boot jobs pass on GitHub Actions; full desktop install job is manual and not yet run there |
 
 Blocking for a production label: 10 (real APIs), 12, 14, 15, 16; 7 and 8 need a hardware-backed key and a second maintainer to be considered robust.
 

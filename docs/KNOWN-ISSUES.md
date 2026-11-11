@@ -78,7 +78,8 @@
 * **GUI tests rely on OCR** of screenshots (tesseract) and fixed keyboard
   sequences; a changed upstream dialog can break a test without a real
   regression.
-* **CI workflow has never run** on a hosting service (no remote repository).
+* **CI:** the `unit` and `minimal-iso` jobs pass on GitHub Actions; the full
+  desktop install job is manual and has not been run on GitHub.
 * Files under `work/` are owned by root (created inside the container).
 
 ## Third-party behaviour worth knowing

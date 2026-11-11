@@ -14,6 +14,8 @@ applications (Welcome, Settings, Assistant), all shipped as `.deb` packages.
 > production-ready. See [`docs/READINESS.md`](docs/READINESS.md) for what has
 > and has not been verified, and [`docs/KNOWN-ISSUES.md`](docs/KNOWN-ISSUES.md).
 
+Website and downloads: <https://retro778.github.io/ZionOS/>
+
 ## Quick start
 
 Requirements on the build host: Docker, ~25 GB free disk, and `/dev/kvm`

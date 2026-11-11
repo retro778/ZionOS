@@ -89,5 +89,7 @@ to a snapshot URL); this has not been exercised. The build is therefore a
 `.github/workflows/ci.yml` builds the container, runs the unit tests and
 static analysis, builds the packages and the minimal ISO and boots it with
 QEMU (TCG if KVM is unavailable). The full desktop install test needs KVM
-and ~40 minutes; it is defined as a manually triggered job. The workflow has
-not been run on GitHub from this repository (there is no remote yet).
+and ~40 minutes; it is defined as a manually triggered job (`workflow_dispatch` with
+`full: true`). The `unit` and `minimal-iso` jobs run on every push and
+passed on GitHub Actions on 2026-11-11; the manually triggered
+`desktop-full` job has not been run there yet.
