@@ -13,7 +13,7 @@
 # Existing locations (the chess server), i2pd and firewall rules are untouched.
 # To undo: remove the include line and the snippet, then "nginx -s reload".
 set -eu
-UPLOAD_USER="${UPLOAD_USER:-${SUDO_USER:-ronen}}"
+UPLOAD_USER="${UPLOAD_USER:-${SUDO_USER:?run with sudo, or set UPLOAD_USER}}"
 SITE="${SITE:-/etc/nginx/sites-available/beginnerchess}"
 [ -f "$SITE" ] || SITE=$(readlink -f /etc/nginx/sites-enabled/beginnerchess)
 SNIPPET=/etc/nginx/snippets/zionos-repo.conf

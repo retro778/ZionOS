@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZionOS</title>
+<meta name="description" content="ZionOS: a Debian-based Linux desktop with English and Hebrew support and an optional AI assistant.">
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, sans-serif; max-width: 44rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
+  h1 { font-size: 2rem; margin-bottom: 0; }
+  h2 { font-size: 1.15rem; margin-top: 2.2rem; border-bottom: 1px solid #8884; padding-bottom: .2rem; }
+  code, pre { font-family: ui-monospace, monospace; font-size: .9rem; }
+  pre { background: #8881; padding: .8rem 1rem; overflow-x: auto; border-radius: 6px; }
+  .note { border-left: 4px solid #c80; padding: .4rem 1rem; background: #c801; }
+  .he { direction: rtl; }
+  footer { margin-top: 3rem; font-size: .85rem; opacity: .75; }
+  table { border-collapse: collapse; } td, th { padding: .25rem .8rem .25rem 0; text-align: start; vertical-align: top; }
+</style>
+</head>
+<body>
+
+<h1>ZionOS</h1>
+<p>A Linux desktop based on Debian 13, in English and Hebrew.</p>
+<p class="he" lang="he">מערכת הפעלה שולחנית מבוססת Debian 13, בעברית ובאנגלית.</p>
+
+<p class="note"><strong>Development preview (0.1.0 "Aleph").</strong> ZionOS installs, runs and updates
+in our QEMU tests, but it is not a production release. It has not been tested on VirtualBox, VMware
+or physical hardware, and it has had no independent security review. Use it in a virtual machine.
+See the <a href="https://github.com/retro778/ZionOS/blob/main/docs/READINESS.md">readiness report</a>
+and <a href="https://github.com/retro778/ZionOS/blob/main/docs/KNOWN-ISSUES.md">known issues</a>.</p>
+
+<h2>What it is</h2>
+<ul>
+  <li>Debian 13 "trixie" underneath: the same kernel, packages, APT and security updates, unmodified.</li>
+  <li>KDE Plasma desktop, Firefox, LibreOffice, a graphical software centre and a graphical installer.</li>
+  <li>English by default; Hebrew selectable at boot, in the installer and afterwards. Right-to-left
+      layout, Hebrew fonts, English and Hebrew keyboard layouts (Alt+Shift).</li>
+  <li>Three small ZionOS applications: Welcome, Settings and an optional AI assistant.</li>
+  <li>The assistant works only with your own OpenAI or Anthropic API key, kept in the desktop keyring.
+      It suggests commands but never runs them. The system is fully usable without it.</li>
+</ul>
+
+<h2>Download</h2>
+<table>
+  <tr><th>Image</th><td><a href="https://freedomnet.tech/iso/zionos-0.1.0-amd64.iso">zionos-0.1.0-amd64.iso</a> (2.5 GB, x86-64, BIOS and UEFI, Secure Boot)</td></tr>
+  <tr><th>Checksums</th><td><a href="https://freedomnet.tech/iso/SHA256SUMS">SHA256SUMS</a>, signature <a href="https://freedomnet.tech/iso/SHA256SUMS.asc">SHA256SUMS.asc</a></td></tr>
+  <tr><th>Signing key</th><td><a href="https://freedomnet.tech/zionos/zionos-archive-keyring.asc">zionos-archive-keyring.asc</a><br>
+      <code>46BB C312 B767 C1DE 8B98 65C3 85E6 DE9A 87D9 9AC3</code></td></tr>
+</table>
+
+<p>Verify before use:</p>
+<pre>curl -O https://freedomnet.tech/zionos/zionos-archive-keyring.asc
+gpg --import zionos-archive-keyring.asc
+gpg --verify SHA256SUMS.asc SHA256SUMS      # must say "Good signature" with the fingerprint above
+sha256sum -c --ignore-missing SHA256SUMS</pre>
+
+<h2>Try it in a virtual machine (QEMU)</h2>
+<pre>qemu-img create -f qcow2 zionos.qcow2 40G
+qemu-system-x86_64 -enable-kvm -cpu host -m 4096 -smp 4 \
+  -device virtio-vga -device qemu-xhci -device usb-tablet \
+  -drive file=zionos.qcow2,if=virtio -cdrom zionos-0.1.0-amd64.iso</pre>
+<p>Choose "ZionOS Live", then press <em>Install ZionOS</em> in the Welcome window. The live session
+user is <code>zion</code> with password <code>live</code>; an installed system has no default password.
+Requirements: 64-bit PC, 4 GB RAM, 20 GB disk.</p>
+
+<h2>Updates</h2>
+<p>Almost everything updates straight from Debian. ZionOS's own packages come from a small signed
+repository, restricted so it can only ever provide <code>zionos-*</code> packages. Use the
+software centre, or <code>sudo apt update &amp;&amp; sudo apt full-upgrade</code>.</p>
+
+<h2>Source, documentation, issues</h2>
+<ul>
+  <li><a href="https://github.com/retro778/ZionOS">Source code on GitHub</a> (GPL-3.0-or-later; artwork CC-BY-SA-4.0)</li>
+  <li><a href="https://github.com/retro778/ZionOS/blob/main/docs/INSTALL.md">Installing</a> ·
+      <a href="https://github.com/retro778/ZionOS/blob/main/docs/BUILD.md">Building it yourself</a> ·
+      <a href="https://github.com/retro778/ZionOS/blob/main/docs/SECURITY.md">Security model</a> ·
+      <a href="https://github.com/retro778/ZionOS/blob/main/docs/AI-PROVIDERS.md">AI assistant and data flow</a> ·
+      <a href="https://github.com/retro778/ZionOS/blob/main/docs/COMPATIBILITY.md">Software compatibility</a> ·
+      <a href="https://github.com/retro778/ZionOS/blob/main/docs/LOCALIZATION.md">Hebrew support</a></li>
+  <li><a href="https://github.com/retro778/ZionOS/issues">Report a problem</a></li>
+</ul>
+
+<footer>
+ZionOS is an independent project. It is not affiliated with or endorsed by the Debian Project, KDE,
+OpenAI or Anthropic. Debian is a registered trademark of Software in the Public Interest, Inc.
+</footer>
+</body>
+</html>

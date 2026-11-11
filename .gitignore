@@ -10,3 +10,4 @@
 __pycache__/
 .cache/
 CMakeUserPresets.json
+/release.local.conf

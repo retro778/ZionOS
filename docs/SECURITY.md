@@ -5,6 +5,10 @@
 * All base packages come from Debian `trixie`, `trixie-updates` and
   `trixie-security` over APT with Debian's archive signatures. ZionOS does
   not rebuild or patch them, so Debian security advisories apply unchanged.
+* ZionOS's own packages come from `https://freedomnet.tech/zionos`, verified
+  with a dedicated archive key (`Signed-By`) and pinned so that repository
+  can only provide `zionos-*` packages. The server holds no signing key
+  (`docs/RELEASE.md`).
 * `unattended-upgrades` is installed (Debian default configuration: security
   updates).
 * UEFI Secure Boot uses Debian's signed shim, GRUB and kernel. ZionOS ships

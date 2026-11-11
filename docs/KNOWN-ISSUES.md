@@ -2,11 +2,11 @@
 
 ## Release blockers (why this is not a production release)
 
-1. **No ZionOS update channel.** There is no hosted, signed ZionOS APT
-   repository and no production signing key. Debian packages update
-   normally; ZionOS's own packages do not. The mechanism is implemented and
-   tested with a throw-away key only (`docs/RELEASE.md`).
-2. **ISO and checksums are unsigned** for the same reason.
+1. **Update channel is new and single-operator.** A signed repository now
+   exists (`docs/RELEASE.md`), but the signing key is a software key held by
+   one person, there is one server and no mirror, and no update has yet
+   been delivered through it to a real user's system.
+2. **Release signing is not hardware-backed** (same key; see above).
 3. **Real AI provider calls are unverified.** The OpenAI and Anthropic
    adapters are tested against scripted servers that follow the published
    schemas; no request has been sent to either real API (no keys were

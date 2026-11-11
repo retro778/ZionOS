@@ -11,6 +11,8 @@
 set -eu
 . "$(dirname "$0")/common.sh"
 . "$ROOT/release.conf"
+[ -f "$ROOT/release.local.conf" ] && . "$ROOT/release.local.conf"
+: "${ZIONOS_REPO_SSH:?set ZIONOS_REPO_SSH (see release.conf)}"
 ISO_TOO=0; DRY=0
 for a in "$@"; do
     case "$a" in --iso) ISO_TOO=1 ;; --dry-run) DRY=1 ;; *) die "unknown option $a" ;; esac

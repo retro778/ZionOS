@@ -11,33 +11,66 @@
    authenticated with a dedicated ZionOS archive key referenced by
    `Signed-By` (never added to the global trusted keys).
 
-### Current state — incomplete
+### Current state
 
-**There is no hosted ZionOS repository and no production signing key.**
-Consequently release 0.1.0 images contain no ZionOS APT source: Debian
-updates work, but ZionOS's own packages do not update automatically. This
-release requirement is **open**.
+A signed ZionOS repository exists (set up 2026-11-10):
 
-What exists and is tested:
+| | |
+|---|---|
+| Repository | `https://freedomnet.tech/zionos`, suite `aleph`, component `main`, `amd64` |
+| ISO downloads | `https://freedomnet.tech/iso/` with `SHA256SUMS` + `SHA256SUMS.asc` |
+| Archive key | "ZionOS Archive Signing Key", ed25519, fingerprint `46BB C312 B767 C1DE 8B98 65C3 85E6 DE9A 87D9 9AC3`, expires 2029-11-09 |
+| Client side | package `zionos-archive-keyring`: public key in `/usr/share/keyrings/zionos-archive-keyring.asc`, source in `/etc/apt/sources.list.d/zionos.sources` (`Signed-By`), pin in `/etc/apt/preferences.d/zionos.pref` |
 
-* `scripts/build-packages.sh` produces `out/repo/`, a flat APT repository
-  (development use, unsigned unless `ZIONOS_SIGN_KEY` is set).
-* `tests/vm/test_update.py` proves the mechanism end to end with a
-  throw-away key: signed repo → `Signed-By` source → `apt upgrade` to a newer
-  ZionOS package; tampered, wrongly-signed and unsigned repositories are
-  rejected by APT.
+Properties:
 
-### Design for the production repository
+* **The server holds no key.** Packages and indexes are built and signed on
+  the release manager's machine (`scripts/publish.sh`) and uploaded with
+  rsync over SSH. A compromised server can withhold or roll back to older
+  signed files, but cannot forge packages.
+* **Scoped trust.** The key is referenced only by `Signed-By` for this one
+  source; it is not a globally trusted APT key.
+* **Scoped content.** The pin gives everything from `o=ZionOS` priority -1
+  except `zionos-*` packages (500), so the repository can never replace a
+  Debian package even if its index listed one.
+* The server (nginx, static files) also runs unrelated services of the
+  maintainer; the repository is two static `location` blocks
+  (`server/setup-zionos-repo.sh`).
 
-* Repository layout: `deb [signed-by=/usr/share/keyrings/zionos-archive-keyring.gpg] https://<host>/zionos aleph main`.
-* A `zionos-archive-keyring` package ships the public key and the deb822
-  source file; it is added to the image only once a real repository exists.
-* Key handling: an offline primary key; a signing subkey on a hardware token
-  used only by the release manager; yearly expiry with rollover through the
-  keyring package (old and new keys overlap for one release).
-* APT pinning (`Pin: release o=ZionOS`, priority 500, restricted to
-  `zionos-*` package names) so the ZionOS repository can never replace a
-  Debian package.
+Remaining weaknesses, stated plainly:
+
+* The signing key is a software key in the maintainer's GnuPG keyring
+  (passphrase-protected), **not on a hardware token and without an offline
+  primary key**. Moving to a hardware token is recommended.
+* A single person holds the key and the server account.
+* No `Valid-Until` is set on the index, so a compromised or stale server
+  could serve an old (validly signed) index indefinitely.
+* One server, no mirror or CDN.
+* Key backup is the maintainer's responsibility; if the key is lost, a new
+  key cannot be delivered to installed systems automatically.
+
+### Creating / rotating the archive key
+
+    gpg --batch --quick-gen-key "ZionOS Archive Signing Key" ed25519 sign 3y
+    gpg --armor --export <FPR> > packages/zionos-system/keyring/zionos-archive-keyring.asc
+    echo <FPR> > packages/zionos-system/keyring/fingerprint
+
+Back up the private key and the revocation certificate offline. To rotate:
+generate the new key, ship **both** public keys in
+`zionos-archive-keyring.asc` in a release signed by the old key, switch
+signing to the new key in the following release, and drop the old key one
+release later. Extend the expiry (`gpg --quick-set-expire`) and republish
+the keyring package well before 2029-11-09.
+
+### Publishing
+
+    scripts/build-packages.sh
+    scripts/publish.sh            # packages; asks for the key passphrase
+    scripts/publish.sh --iso      # also ISO + signed checksums
+
+`tests/vm/test_update.py` additionally proves the client-side behaviour with
+a throw-away key: upgrade from a signed repository; tampered, wrongly-signed
+and unsigned repositories rejected.
 
 ## Release procedure
 
@@ -53,9 +86,9 @@ What exists and is tested:
    packages to the repository; tag the commit (`git tag -s v<version>`).
 7. Users verify: `gpg --verify SHA256SUMS.asc SHA256SUMS && sha256sum -c SHA256SUMS`.
 
-Steps 5–6 cannot be completed today (no signing key, no hosting);
-`scripts/release-metadata.sh` then writes unsigned checksums and marks the
-build `"checksums_signed": false`.
+`scripts/publish.sh --iso` performs steps 5–6 for the ISO, checksums and
+packages. Without a key, `scripts/release-metadata.sh` writes unsigned
+checksums and marks the build `"checksums_signed": false`.
 
 ## Release criteria
 
